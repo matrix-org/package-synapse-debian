@@ -1,0 +1,31 @@
+Description: Add sitepackage=True to tox.ini
+ To make sure tox does not try and talk to pypi, we have to insert
+ sitepackage=True.
+ .
+ matrix-synapse (0.11.0~rc2-0ubuntu1) wheezy; urgency=medium
+ .
+   * New upstream release
+Author: Erik Johnston <erikj@matrix.org>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: http://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: <YYYY-MM-DD>
+
+--- matrix-synapse-0.11.0~rc2.orig/tox.ini
++++ matrix-synapse-0.11.0~rc2/tox.ini
+@@ -1,5 +1,6 @@
+ [tox]
+ envlist = packaging, py27, pep8
++sitepackages = True
+ 
+ [testenv]
+ deps =

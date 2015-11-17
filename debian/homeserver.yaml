@@ -1,0 +1,201 @@
+# vim:ft=yaml
+# PEM encoded X509 certificate for TLS
+tls_certificate_path: "/etc/matrix-synapse/homeserver.tls.crt"
+
+# PEM encoded private key for TLS
+tls_private_key_path: "/etc/matrix-synapse/homeserver.tls.key"
+
+# PEM dh parameters for ephemeral keys
+tls_dh_params_path: "/etc/matrix-synapse/homeserver.tls.dh"
+
+# Don't bind to the https port
+no_tls: False
+
+
+## Server ##
+
+# The port to listen for HTTPS requests on.
+# For when matrix traffic is sent directly to synapse.
+bind_port: 8448
+
+# The port to listen for HTTP requests on.
+# For when matrix traffic passes through loadbalancer that unwraps TLS.
+unsecure_port: 8008
+
+# Local interface to listen on.
+# The empty string will cause synapse to listen on all interfaces.
+bind_host: ""
+
+# When running as a daemon, the file to store the pid in
+pid_file: "/var/run/matrix-synapse.pid"
+
+# Whether to serve a web client from the HTTP/HTTPS root resource.
+web_client: False
+
+# Set the soft limit on the number of file descriptors synapse can use
+# Zero is used to indicate synapse should set the soft limit to the
+# hard limit.
+soft_file_limit: 0
+
+# Turn on the twisted telnet manhole service on localhost on the given
+# port.
+#manhole: 9000
+
+# Should synapse compress HTTP responses to clients that support it?
+# This should be disabled if running synapse behind a load balancer
+# that can do automatic compression.
+gzip_responses: True
+
+
+# Database configuration
+database:
+  # The database engine name
+  name: "sqlite3"
+  # Arguments to pass to the engine
+  args:
+    # Path to the database
+    database: "/var/lib/matrix-synapse/homeserver.db"
+
+# Number of events to cache in memory.
+event_cache_size: "10K"
+
+
+
+# Logging verbosity level.
+verbose: 0
+
+# File to write logging to
+log_file: "/var/log/matrix-synapse/homeserver.log"
+
+# A yaml python logging config file
+log_config: "/etc/matrix-synapse/log.yaml"
+
+
+## Ratelimiting ##
+
+# Number of messages a client can send per second
+rc_messages_per_second: 0.2
+
+# Number of message a client can send before being throttled
+rc_message_burst_count: 10.0
+
+# The federation window size in milliseconds
+federation_rc_window_size: 1000
+
+# The number of federation requests from a single server in a window
+# before the server will delay processing the request.
+federation_rc_sleep_limit: 10
+
+# The duration in milliseconds to delay processing events from
+# remote servers by if they go over the sleep limit.
+federation_rc_sleep_delay: 500
+
+# The maximum number of concurrent federation requests allowed
+# from a single server
+federation_rc_reject_limit: 50
+
+# The number of federation requests to concurrently process from a
+# single server
+federation_rc_concurrent: 3
+
+
+
+# Directory where uploaded images and attachments are stored.
+media_store_path: "/var/lib/matrix-synapse/media"
+
+# The largest allowed upload size in bytes
+max_upload_size: "10M"
+
+# Maximum number of pixels that will be thumbnailed
+max_image_pixels: "32M"
+
+
+## Captcha ##
+
+# This Home Server's ReCAPTCHA public key.
+recaptcha_private_key: "YOUR_PUBLIC_KEY"
+
+# This Home Server's ReCAPTCHA private key.
+recaptcha_public_key: "YOUR_PRIVATE_KEY"
+
+# Enables ReCaptcha checks when registering, preventing signup
+# unless a captcha is answered. Requires a valid ReCaptcha
+# public/private key.
+enable_registration_captcha: False
+
+# When checking captchas, use the X-Forwarded-For (XFF) header
+# as the client IP and not the actual client IP.
+captcha_ip_origin_is_x_forwarded: False
+
+# A secret key used to bypass the captcha test entirely.
+#captcha_bypass_secret: "YOUR_SECRET_HERE"
+
+# The API endpoint to use for verifying m.login.recaptcha responses.
+recaptcha_siteverify_api: "https://www.google.com/recaptcha/api/siteverify"
+
+
+## Turn ##
+
+# The public URIs of the TURN server to give to clients
+turn_uris: []
+
+# The shared secret used to compute passwords for the TURN server
+turn_shared_secret: "YOUR_SHARED_SECRET"
+
+# How long generated TURN credentials last
+turn_user_lifetime: "1h"
+
+
+## Registration ##
+
+# Enable registration for new users.
+enable_registration: False
+
+# If set, allows registration by anyone who also has the shared
+# secret, even if registration is otherwise disabled.
+registration_shared_secret: "qIWPCASK#_7-hihF+*B-*iHAY_pvxHTHvNvZ#KJ1R_ja+m=CbF"
+
+
+## Metrics ###
+
+# Enable collection and rendering of performance metrics
+enable_metrics: False
+
+# Separate port to accept metrics requests on
+# metrics_port: 8081
+
+# Which host to bind the metric listener to
+# metrics_bind_host: 127.0.0.1
+
+
+# A list of application service config file to use
+app_service_config_files: []
+
+
+## Signing Keys ##
+
+# Path to the signing key to sign messages with
+signing_key_path: "/etc/matrix-synapse/homeserver.signing.key"
+
+# The keys that the server used to sign messages with but won't use
+# to sign new messages. E.g. it has lost its private key
+old_signing_keys: {}
+#  "ed25519:auto":
+#    # Base64 encoded public key
+#    key: "The public part of your old signing key."
+#    # Millisecond POSIX timestamp when the key expired.
+#    expired_ts: 123456789123
+
+# How long key response published by this server is valid for.
+# Used to set the valid_until_ts in /key/v2 APIs.
+# Determines how quickly servers will query to check which keys
+# are still valid.
+key_refresh_interval: "1d" # 1 Day.
+
+# The trusted servers to download signing keys from.
+perspectives:
+  servers:
+    "matrix.org":
+      verify_keys:
+        "ed25519:auto":
+          key: "Noi6WqcDj0QmPxCNQqgezwTlBKrfqehY1u2FyWP9uYw"
