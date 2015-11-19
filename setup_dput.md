@@ -1,6 +1,6 @@
-~/.devscripts should be:
+~/.devscripts should be (insert your own email):
 
-    EMAIL="erikj@matrix.org"
+    EMAIL="<EMAIL>"
     DEBRELEASE_UPLOADER=dput
     DSCVERIFY_KEYRINGS="/etc/apt/trusted.gpg:~/.gnupg/pubring.gpg"
 
