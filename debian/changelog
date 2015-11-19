@@ -1,3 +1,10 @@
+matrix-synapse (0.11.0-r2-1) stable; urgency=medium
+
+  * Imported Upstream version 0.11.0-r2
+  * Add gbp.conf
+
+ -- Erik Johnston <erikj@matrix.org>  Thu, 19 Nov 2015 13:52:36 +0000
+
 matrix-synapse (0.11.0-1) wheezy; urgency=medium
 
   * Fix dependencies.
