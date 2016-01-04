@@ -24,6 +24,7 @@ You will want to set ~/.gbp.conf to:
 
 to use sbuild rather than pbuilder.
 
+    sbuild-update --keygen # Generate a signing key
 
 To make a new release:
 
