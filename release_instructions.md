@@ -11,6 +11,7 @@ debian repository to all the schroots.
     # Logout/Login to get a new session
     sudo schroot -c source:wheezy-amd64 -u root # Enter the schroot
     echo deb http://matrix.org/packages/debian/ wheezy main > /etc/apt/sources.list.d/matrix.list
+    echo deb http://ftp.debian.org/debian wheezy-backports main non-free contrib > /etc/apt/sources.list.d/backports.list
     apt-key add - <<EOF # Copy key from https://matrix.org/packages/debian/repo-key.asc
     EOF
     apt-get update
