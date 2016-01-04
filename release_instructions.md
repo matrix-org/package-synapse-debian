@@ -26,6 +26,8 @@ to use sbuild rather than pbuilder.
 
 To make a new release:
 
+    gbp clone git@github.com:matrix-org/package-synapse-debian
+    cd package-synapse-debian
     git checkout debian
     gbp import-orig --uscan  # Scans and downloads the new source.
     gbp dch --snapshot --auto debian
