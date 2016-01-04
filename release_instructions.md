@@ -52,5 +52,5 @@ If it works (and runs) then we can actually release it:
 To push to the repo:
 
     debsign
-    debrelease matrix-synapse
+    debrelease matrix
 
