@@ -9,11 +9,12 @@ debian repository to all the schroots.
 
     mk-sbuild --eatmydata wheezy
     # Logout/Login to get a new session
-    sudo schroot -c source:wheezy-amd64 -u root
+    sudo schroot -c source:wheezy-amd64 -u root # Enter the schroot
     echo deb http://matrix.org/packages/debian/ wheezy main > /etc/apt/sources.list.d/matrix.list
     apt-key add - <<EOF # Copy key from https://matrix.org/packages/debian/repo-key.asc
     EOF
     apt-get update
+    exit # Leave the schroot
     
 You will want to set ~/.gbp.conf to:
 
