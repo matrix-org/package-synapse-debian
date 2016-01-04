@@ -51,6 +51,8 @@ If it works (and runs) then we can actually release it:
 
 To push to the repo:
 
+    git push --all
+    git push --tags
     debsign
     debrelease matrix
 
