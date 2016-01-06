@@ -153,7 +153,7 @@ enable_registration: False
 
 # If set, allows registration by anyone who also has the shared
 # secret, even if registration is otherwise disabled.
-registration_shared_secret: "qIWPCASK#_7-hihF+*B-*iHAY_pvxHTHvNvZ#KJ1R_ja+m=CbF"
+# registration_shared_secret: <PRIVATE STRING>
 
 
 ## Metrics ###
