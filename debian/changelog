@@ -1,3 +1,9 @@
+matrix-synapse (0.13.0-1) trusty; urgency=medium
+
+  * New upstream release
+
+ -- Erik Johnston <erikj@matrix.org>  Wed, 10 Feb 2016 16:34:39 +0000
+
 matrix-synapse (0.12.0-2) trusty; urgency=medium
 
   * Don't default `registerion_shared_secret` config option
