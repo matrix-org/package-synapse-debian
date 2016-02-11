@@ -1,3 +1,16 @@
+Changes in synapse v0.13.2 (2016-02-11)
+=======================================
+
+* Fix bug where ``/events`` would fail to skip some events if there had been
+  more events than the limit specified since the last request (PR #570)
+
+Changes in synapse v0.13.1 (2016-02-10)
+=======================================
+
+* Bump matrix-angular-sdk (matrix web console) dependency to 0.6.8 to
+  pull in the fix for SYWEB-361 so that the default client can display
+  HTML messages again(!)
+
 Changes in synapse v0.13.0 (2016-02-10)
 =======================================
 
