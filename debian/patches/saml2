@@ -1,0 +1,21 @@
+Description: Remove saml2 module version check
+ Older debian packages of saml2 do not include a module __version__
+ .
+ matrix-synapse (0.14.0-1~2.gbpb02126) UNRELEASED; urgency=medium
+ .
+   ** SNAPSHOT build @b021265b87a6b22f687cdb7ab6184bab24b1716c **
+ .
+   * UNRELEASED
+Author: Erik Johnston <erikj@matrix.org>
+
+--- matrix-synapse-0.14.0.orig/synapse/python_dependencies.py
++++ matrix-synapse-0.14.0/synapse/python_dependencies.py
+@@ -34,7 +34,7 @@ REQUIREMENTS = {
+     "pydenticon": ["pydenticon"],
+     "ujson": ["ujson"],
+     "blist": ["blist"],
+-    "pysaml2>=3.0.0,<4.0.0": ["saml2>=3.0.0,<4.0.0"],
++    "pysaml2>=3.0.0,<4.0.0": ["saml2"],
+     "pymacaroons-pynacl": ["pymacaroons"],
+ }
+ CONDITIONAL_REQUIREMENTS = {
