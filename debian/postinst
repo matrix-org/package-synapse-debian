@@ -31,6 +31,8 @@ case "$1" in
       fi
     done
 
+    /usr/bin/python -m synapse.app.homeserver --config-path=/etc/matrix-synapse/homeserver.yaml --config-path=/etc/matrix-synapse/conf.d/ --generate-keys
+
     ;;
 esac
 
