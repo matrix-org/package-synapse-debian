@@ -2,6 +2,7 @@ You will need to have the following (non-exhaustive) packages:
 
     - ubuntu-dev-tools
     - git-buildbackage
+    - dh-systemd
     - sbuild
 
 You should create a bunch of schroots (see mk-sbuild) and add the matrix
