@@ -3,7 +3,7 @@ Maintainer: Erik Johnston <erikj@matrix.org>
 Section: python
 Priority: optional
 Build-Depends: python-setuptools (>= 0.6b3), python (>= 2.6.6-3), 
- debhelper (>= 9), dh-python, python-mock, python-twisted (>= 15.1.0),
+ debhelper (>= 9), dh-python, dh-systemd (>= 1.5), python-mock, python-twisted (>= 15.1.0),
  python-syutil (>= 0.0.7), python-yaml, python-frozendict (>= 0.4),
  python-bcrypt, python-daemonize, python-openssl (>= 0.14),
  python-service-identity (>= 1.0.0), python-blist, python-pyasn1, python-pysaml2,

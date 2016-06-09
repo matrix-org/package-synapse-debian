@@ -4,7 +4,7 @@
 # Fri, 12 Jun 2015 14:32:03 +0100
 export PYBUILD_NAME=matrix-synapse
 %:
-	dh $@ --with python2 --buildsystem=pybuild --no-guessing-deps
+	dh $@ --with python2 --with systemd --buildsystem=pybuild --no-guessing-deps
 
 override_dh_auto_install:
 	python setup.py install --root=debian/matrix-synapse --install-layout=deb
