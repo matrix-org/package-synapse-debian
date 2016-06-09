@@ -17,6 +17,7 @@ Package: matrix-synapse
 Architecture: all
 Depends: ${misc:Depends}, ${python:Depends},
  debconf, adduser
+Suggests: python-bleach (>= 1.4.2), python-jinja2 (>= 2.8)
 Description: Reference Synapse Home Server
  .. contents::
  .
