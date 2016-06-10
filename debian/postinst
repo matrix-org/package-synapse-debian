@@ -25,7 +25,7 @@ case "$1" in
       adduser --quiet --system --no-create-home --home /var/lib/matrix-synapse $USER
     fi
 
-    for DIR in /var/lib/matrix-synapse /var/log/matrix-synapse; do
+    for DIR in /var/lib/matrix-synapse /var/log/matrix-synapse /etc/matrix-synapse; do
       if ! dpkg-statoverride --list --quiet $DIR >/dev/null; then
         dpkg-statoverride --force --quiet --update --add $USER nogroup 0755 $DIR
       fi
