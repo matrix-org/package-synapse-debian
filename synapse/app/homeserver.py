@@ -146,7 +146,7 @@ class SynapseHomeServer(HomeServer):
                         SERVER_KEY_V2_PREFIX: KeyApiV2Resource(self),
                     })
 
-                if name == "webclient":
+                if name == "webclient" and config.web_client:
                     resources[WEB_CLIENT_PREFIX] = build_resource_for_web_client(self)
 
                 if name == "metrics" and self.get_config().enable_metrics:
