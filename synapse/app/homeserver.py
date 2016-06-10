@@ -34,8 +34,7 @@ from synapse.http.server import RootRedirect
 from synapse.http.site import SynapseSite
 from synapse.metrics import register_memory_metrics
 from synapse.metrics.resource import METRICS_PREFIX, MetricsResource
-from synapse.python_dependencies import CONDITIONAL_REQUIREMENTS, \
-    check_requirements
+from synapse.python_dependencies import check_requirements
 from synapse.replication.tcp.resource import ReplicationStreamProtocolFactory
 from synapse.rest import ClientRestResource
 from synapse.rest.key.v1.server_key_resource import LocalKey
@@ -75,12 +74,11 @@ def build_resource_for_web_client(hs):
                 "Please either install the matrix-angular-sdk or configure\n"
                 "the location of the source to serve via the configuration\n"
                 "option `web_client_location`\n\n"
-                "To install the `matrix-angular-sdk` via pip, run:\n\n"
-                "    pip install '%(dep)s'\n"
+                "To install the `matrix-angular-sdk` via apt-get, run:\n\n"
+                "    apt-get install matrix-synapse-angular-client\n"
                 "\n"
                 "You can also disable hosting of the webclient via the\n"
                 "configuration option `web_client`\n"
-                % {"dep": CONDITIONAL_REQUIREMENTS["web_client"].keys()[0]}
             )
         syweb_path = os.path.dirname(syweb.__file__)
         webclient_path = os.path.join(syweb_path, "webclient")
