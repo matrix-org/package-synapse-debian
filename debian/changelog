@@ -1,3 +1,13 @@
+matrix-synapse (0.16.0-2) trusty; urgency=medium
+
+  * Also change the permissions of /etc/matrix-synapse
+  * Add apt webclient instructions
+  * Fix up patches
+  * Update default homeserver.yaml
+  * Add patch
+
+ -- Erik Johnston <erikj@matrix.org>  Fri, 10 Jun 2016 14:06:20 +0100
+
 matrix-synapse (0.16.0-1) trusty; urgency=medium
 
   [ David A Roberts ]
