@@ -29,6 +29,11 @@ class ConfigError(Exception):
 MISSING_REPORT_STATS_CONFIG_INSTRUCTIONS = """\
 Please opt in or out of reporting anonymized homeserver usage statistics, by
 setting the `report_stats` key in your config file to either True or False.
+
+To set it run:
+
+    dpkg-reconfigure matrix-synapse
+
 """
 
 MISSING_REPORT_STATS_SPIEL = """\
@@ -43,6 +48,11 @@ Thank you.
 
 MISSING_SERVER_NAME = """\
 Missing mandatory `server_name` config option.
+
+To set it run:
+
+    dpkg-reconfigure matrix-synapse
+
 """
 
 
