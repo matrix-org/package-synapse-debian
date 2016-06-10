@@ -1,0 +1,21 @@
+From: Erik Johnston <erikj@matrix.org>
+Date: Fri, 10 Jun 2016 10:57:07 +0100
+Subject: saml2
+
+---
+ synapse/python_dependencies.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/synapse/python_dependencies.py b/synapse/python_dependencies.py
+index e0a7a19..25083b8 100644
+--- a/synapse/python_dependencies.py
++++ b/synapse/python_dependencies.py
+@@ -34,7 +34,7 @@ REQUIREMENTS = {
+     "pydenticon": ["pydenticon"],
+     "ujson": ["ujson"],
+     "blist": ["blist"],
+-    "pysaml2>=3.0.0,<4.0.0": ["saml2>=3.0.0,<4.0.0"],
++    "pysaml2>=3.0.0,<4.0.0": ["saml2"],
+     "pymacaroons-pynacl": ["pymacaroons"],
+ }
+ CONDITIONAL_REQUIREMENTS = {

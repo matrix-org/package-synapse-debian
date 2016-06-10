@@ -1,0 +1,19 @@
+From: Erik Johnston <erikj@matrix.org>
+Date: Fri, 10 Jun 2016 10:57:07 +0100
+Subject: tox
+
+---
+ tox.ini | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tox.ini b/tox.ini
+index 757b718..fe951fe 100644
+--- a/tox.ini
++++ b/tox.ini
+@@ -1,5 +1,6 @@
+ [tox]
+ envlist = packaging, py27, pep8
++sitepackages = True
+ 
+ [testenv]
+ deps =
