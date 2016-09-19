@@ -17,5 +17,6 @@ index e0a7a19..25083b8 100644
 -    "pysaml2>=3.0.0,<4.0.0": ["saml2>=3.0.0,<4.0.0"],
 +    "pysaml2>=3.0.0,<4.0.0": ["saml2"],
      "pymacaroons-pynacl": ["pymacaroons"],
+     "msgpack-python>=0.3.0": ["msgpack"],
  }
  CONDITIONAL_REQUIREMENTS = {
