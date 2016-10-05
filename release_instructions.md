@@ -34,7 +34,7 @@ To make a new release:
     git checkout debian
     gbp import-orig --uscan  # Scans and downloads the new source.
     gbp dch --snapshot --auto debian
-    gbp buildpackage --git-ignore-new -c <schroot name> -A -s -d wheezy
+    gbp buildpackage --git-ignore-new -A -s -d wheezy -c <schroot name>
 
 If the build succeeds then it will have placed a .deb file in the directory
 above. It is a good idea to check that is installable by copying it to the
@@ -48,7 +48,7 @@ If it works (and runs) then we can actually release it:
     gbp dch --release --auto  # Ensure that the changelog doesnt lie
     git commit -m "<RELEASE>" debian/changelog
     git clean -dfx  # This ensures that there are no uncommitted changes
-    gbp buildpackage --git-tag -c <schroot name> -A -s -d wheezy
+    gbp buildpackage --git-tag -A -s -d wheezy -c <schroot name>
 
 To push to the repo:
 
