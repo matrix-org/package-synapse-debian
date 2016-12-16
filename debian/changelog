@@ -1,3 +1,9 @@
+matrix-synapse (0.18.5-1) trusty; urgency=medium
+
+  * Imported Upstream version 0.18.5
+
+ -- Erik Johnston <erikj@matrix.org>  Fri, 16 Dec 2016 10:51:59 +0000
+
 matrix-synapse (0.18.4-1) trusty; urgency=medium
 
   * Imported Upstream version 0.18.4
