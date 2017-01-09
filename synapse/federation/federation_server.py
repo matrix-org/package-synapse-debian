@@ -23,6 +23,7 @@ from synapse.util.async import Linearizer
 from synapse.util.logutils import log_function
 from synapse.util.caches.response_cache import ResponseCache
 from synapse.events import FrozenEvent
+from synapse.types import get_domain_from_id
 import synapse.metrics
 
 from synapse.api.errors import AuthError, FederationError, SynapseError
@@ -132,7 +133,7 @@ class FederationServer(FederationBase):
 
         if response:
             logger.debug(
-                "[%s] We've already responed to this request",
+                "[%s] We've already responded to this request",
                 transaction.transaction_id
             )
             defer.returnValue(response)
@@ -143,6 +144,26 @@ class FederationServer(FederationBase):
         results = []
 
         for pdu in pdu_list:
+            # check that it's actually being sent from a valid destination to
+            # workaround bug #1753 in 0.18.5 and 0.18.6
+            if transaction.origin != get_domain_from_id(pdu.event_id):
+                if not (
+                    pdu.type == 'm.room.member' and
+                    pdu.content and
+                    pdu.content.get("membership", None) == 'join' and
+                    self.hs.is_mine_id(pdu.state_key)
+                ):
+                    logger.info(
+                        "Discarding PDU %s from invalid origin %s",
+                        pdu.event_id, transaction.origin
+                    )
+                    continue
+                else:
+                    logger.info(
+                        "Accepting join PDU %s from %s",
+                        pdu.event_id, transaction.origin
+                    )
+
             try:
                 yield self._handle_new_pdu(transaction.origin, pdu)
                 results.append({})
@@ -425,6 +446,7 @@ class FederationServer(FederationBase):
                 " limit: %d, min_depth: %d",
                 earliest_events, latest_events, limit, min_depth
             )
+
             missing_events = yield self.handler.on_get_missing_events(
                 origin, room_id, earliest_events, latest_events, limit, min_depth
             )
@@ -474,6 +496,7 @@ class FederationServer(FederationBase):
     @defer.inlineCallbacks
     @log_function
     def _handle_new_pdu(self, origin, pdu, get_missing=True):
+
         # We reprocess pdus when we have seen them only as outliers
         existing = yield self._get_persisted_pdu(
             origin, pdu.event_id, do_auth=False
@@ -538,7 +561,16 @@ class FederationServer(FederationBase):
                 if get_missing and prevs - seen:
                     # If we're missing stuff, ensure we only fetch stuff one
                     # at a time.
+                    logger.info(
+                        "Acquiring lock for room %r to fetch %d missing events: %r...",
+                        pdu.room_id, len(prevs - seen), list(prevs - seen)[:5],
+                    )
                     with (yield self._room_pdu_linearizer.queue(pdu.room_id)):
+                        logger.info(
+                            "Acquired lock for room %r to fetch %d missing events",
+                            pdu.room_id, len(prevs - seen),
+                        )
+
                         # We recalculate seen, since it may have changed.
                         have_seen = yield self.store.have_events(prevs)
                         seen = set(have_seen.keys())
@@ -558,6 +590,25 @@ class FederationServer(FederationBase):
                                 len(prevs - seen), pdu.room_id, list(prevs - seen)[:5]
                             )
 
+                            # XXX: we set timeout to 10s to help workaround
+                            # https://github.com/matrix-org/synapse/issues/1733.
+                            # The reason is to avoid holding the linearizer lock
+                            # whilst processing inbound /send transactions, causing
+                            # FDs to stack up and block other inbound transactions
+                            # which empirically can currently take up to 30 minutes.
+                            #
+                            # N.B. this explicitly disables retry attempts.
+                            #
+                            # N.B. this also increases our chances of falling back to
+                            # fetching fresh state for the room if the missing event
+                            # can't be found, which slightly reduces our security.
+                            # it may also increase our DAG extremity count for the room,
+                            # causing additional state resolution?  See #1760.
+                            # However, fetching state doesn't hold the linearizer lock
+                            # apparently.
+                            #
+                            # see https://github.com/matrix-org/synapse/pull/1744
+
                             missing_events = yield self.get_missing_events(
                                 origin,
                                 pdu.room_id,
@@ -565,6 +616,7 @@ class FederationServer(FederationBase):
                                 latest_events=[pdu],
                                 limit=10,
                                 min_depth=min_depth,
+                                timeout=10000,
                             )
 
                             # We want to sort these by depth so we process them and

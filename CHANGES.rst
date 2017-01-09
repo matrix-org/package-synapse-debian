@@ -1,3 +1,71 @@
+Changes in synapse v0.18.7 (2017-01-09)
+=======================================
+
+No changes from v0.18.7-rc2
+
+
+Changes in synapse v0.18.7-rc2 (2017-01-07)
+===========================================
+
+Bug fixes:
+
+* Fix error in rc1's discarding invalid inbound traffic logic that was
+  incorrectly discarding missing events
+
+
+Changes in synapse v0.18.7-rc1 (2017-01-06)
+===========================================
+
+Bug fixes:
+
+* Fix error in #PR 1764 to actually fix the nightmare #1753 bug.
+* Improve deadlock logging further
+* Discard inbound federation traffic from invalid domains, to immunise
+  against #1753
+
+
+Changes in synapse v0.18.6 (2017-01-06)
+=======================================
+
+Bug fixes:
+
+* Fix bug when checking if a guest user is allowed to join a room (PR #1772)
+
+
+Changes in synapse v0.18.6-rc3 (2017-01-05)
+===========================================
+
+Bug fixes:
+
+* Fix bug where we failed to send ban events to the banned server (PR #1758)
+* Fix bug where we sent event that didn't originate on this server to
+  other servers (PR #1764)
+* Fix bug where processing an event from a remote server took a long time
+  because we were making long HTTP requests (PR #1765, PR #1744)
+
+Changes:
+
+* Improve logging for debugging deadlocks (PR #1766, PR #1767)
+
+
+Changes in synapse v0.18.6-rc2 (2016-12-30)
+===========================================
+
+Bug fixes:
+
+* Fix memory leak in twisted by initialising logging correctly (PR #1731)
+* Fix bug where fetching missing events took an unacceptable amount of time in
+  large rooms (PR #1734)
+
+
+Changes in synapse v0.18.6-rc1 (2016-12-29)
+===========================================
+
+Bug fixes:
+
+* Make sure that outbound connections are closed (PR #1725)
+
+
 Changes in synapse v0.18.5 (2016-12-16)
 =======================================
 
