@@ -6,11 +6,11 @@ Subject: Honour config.web_client
  synapse/app/homeserver.py | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/synapse/app/homeserver.py b/synapse/app/homeserver.py
-index dc89f83..7c5d573 100755
---- a/synapse/app/homeserver.py
-+++ b/synapse/app/homeserver.py
-@@ -156,7 +156,7 @@ class SynapseHomeServer(HomeServer):
+Index: package-synapse-debian/synapse/app/homeserver.py
+===================================================================
+--- package-synapse-debian.orig/synapse/app/homeserver.py
++++ package-synapse-debian/synapse/app/homeserver.py
+@@ -157,7 +157,7 @@ class SynapseHomeServer(HomeServer):
                          SERVER_KEY_V2_PREFIX: KeyApiV2Resource(self),
                      })
  
