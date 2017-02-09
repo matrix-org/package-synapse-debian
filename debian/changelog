@@ -1,4 +1,10 @@
-matrix-synapse (0.19.0-1) xenial; urgency=medium
+matrix-synapse (0.19.1-1) jessie; urgency=medium
+
+  * Imported upstream version 0.19.1
+
+ -- Erik Johnston <erikj@matrix.org>  Thu, 09 Feb 2017 11:53:27 +0000
+
+matrix-synapse (0.19.0-1) jessie; urgency=medium
 
   This build requires python-twisted 0.19.0, which may need to be installed
   from backports.
