@@ -18,25 +18,19 @@ Architecture: all
 Depends: ${misc:Depends}, ${python:Depends},
  debconf, adduser, python-twisted (>= 16.0.0)
 Suggests: python-bleach (>= 1.4.2), python-jinja2 (>= 2.8)
-Description: Reference Synapse Home Server
- .. contents::
+Description: Matrix reference homeserver
+ Synapse is the reference Python/Twisted Matrix homeserver implementation.
  .
- Introduction
- ============
+ Synapse is intended to showcase the concept of Matrix, and to let users run
+ their own homeserver and generally help bootstrap the ecosystem.
  .
- Matrix is an ambitious new ecosystem for open federated Instant Messaging and
- VoIP.  The basics you need to know to get up and running are:
+ Matrix is an open standard for interoperable, decentralised, real-time
+ communication over IP. It can be used to power Instant Messaging, VoIP/WebRTC
+ signalling, Internet of Things communication or anywhere where's a need for
+ a standard HTTP API for publishing and subscribing to data whilst tracking the
+ conversation history.
  .
- - Everything in Matrix happens in a room.  Rooms are distributed and do not
-   exist on any single server.  Rooms can be located using convenience aliases 
-   like ``#matrix:matrix.org`` or ``#test:localhost:8448``.
- .
- - Matrix user IDs look like ``@matthew:matrix.org`` (although in the future
-   you will normally refer to yourself and others using a 3PID: email
-   address, phone number, etc rather than manipulating Matrix user IDs)
- .
- The overall architecture is::
- .
-       client <----> homeserver <=====================> homeserver <----> client
-              https://somewhere.org/_matrix      https://elsewhere.net/_matrix
-
+ In Matrix, every user runs one or more Matrix clients, which connect through
+ to a Matrix homeserver. The homeserver stores all their personal chat history
+ and user account information, much as a mail client connects through to an
+ IMAP/SMTP server.
