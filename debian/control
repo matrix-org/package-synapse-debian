@@ -1,5 +1,5 @@
 Source: matrix-synapse
-Maintainer: Erik Johnston <erikj@matrix.org>
+Maintainer: Andrew Shadura <andrewsh@debian.org>
 Section: python
 Priority: optional
 Build-Depends: python-setuptools (>= 0.6b3), python (>= 2.6.6-3), 
