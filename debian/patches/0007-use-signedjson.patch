@@ -1,0 +1,13 @@
+diff --git a/contrib/cmdclient/console.py b/contrib/cmdclient/console.py
+index 8bb03ce..4918fa1 100755
+--- a/contrib/cmdclient/console.py
++++ b/contrib/cmdclient/console.py
+@@ -32,7 +32,7 @@ import urlparse
+ import nacl.signing
+ import nacl.encoding
+ 
+-from syutil.crypto.jsonsign import verify_signed_json, SignatureVerifyException
++from signedjson.sign import verify_signed_json, SignatureVerifyException
+ 
+ CONFIG_JSON = "cmdclient_config.json"
+ 
