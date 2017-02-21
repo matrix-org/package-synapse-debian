@@ -1,6 +1,6 @@
 Source: matrix-synapse
 Maintainer: Andrew Shadura <andrewsh@debian.org>
-Section: python
+Section: net
 Priority: optional
 Build-Depends:
  debhelper (>= 9),
