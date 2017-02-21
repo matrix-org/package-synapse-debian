@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: matrix-synapse\n"
 "Report-Msgid-Bugs-To: matrix-synapse@packages.debian.org\n"
-"POT-Creation-Date: 2017-02-21 06:13+0000\n"
+"POT-Creation-Date: 2017-02-21 07:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../templates:1001
-msgid "Name of the server"
+msgid "Name of the server:"
 msgstr ""
 
 #. Type: string
@@ -34,18 +34,19 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../templates:2001
-msgid "Report anonymous stats (yes/no)"
+msgid "Report anonymous statistics?"
 msgstr ""
 
 #. Type: boolean
 #. Description
 #: ../templates:2001
 msgid ""
-"We would really appreciate it if you could help our project out by reporting "
-"anonymized usage statistics from your homeserver. Only very basic aggregate "
-"data (e.g. number of users) will be reported, but it helps us to track the "
-"growth of the Matrix community, and helps us to make Matrix a success, as "
-"well as to convince other networks that they should peer with us."
+"Developers of Matrix and Synapse really appreciate helping the project out "
+"by reporting anonymized usage statistics from this homeserver. Only very "
+"basic aggregate data (e.g. number of users) will be reported, but it helps "
+"track the growth of the Matrix community, and helps in making Matrix a "
+"success, as well as to convince other networks that they should peer with "
+"Matrix."
 msgstr ""
 
 #. Type: boolean
