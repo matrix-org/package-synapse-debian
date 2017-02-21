@@ -32,6 +32,8 @@ Build-Depends:
  python-yaml
 Standards-Version: 3.9.8
 X-Python-Version: >= 2.7
+Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/matrix-synapse.git
+Vcs-Git: https://anonscm.debian.org/git/collab-maint/matrix-synapse.git
 
 Package: matrix-synapse
 Architecture: all
