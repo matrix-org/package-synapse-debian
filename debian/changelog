@@ -1,3 +1,21 @@
+matrix-synapse (0.19.2-1) jessie; urgency=medium
+
+  [ Sunil Mohan Adapa ]
+  * Bump standards version to 3.9.8
+  * Add debian/copyright file
+  * Don't ignore errors in debian/config
+  * Reformat depenedencies in debian/control
+  * Internationalize strings in template file
+  * Update package description
+  * Add lsb-base as dependency
+  * Update questions for debconf style
+  * Add man pages for all binaries
+
+  [ Erik Johnston ]
+  * Imported upstream version 0.19.2
+
+ -- Erik Johnston <erikj@matrix.org>  Tue, 21 Feb 2017 13:55:00 +0000
+
 matrix-synapse (0.19.1-1) jessie; urgency=medium
 
   * Imported upstream version 0.19.1
