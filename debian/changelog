@@ -1,3 +1,19 @@
+matrix-synapse (0.19.2-1) unstable; urgency=medium
+
+  [ Sunil Mohan Adapa ]
+  * Bump standards version to 3.9.8.
+  * Don't ignore errors in debian/config.
+  * Internationalise strings in the template file.
+  * Add lsb-base as a dependency.
+  * Update debconf questions.
+  * Add manpages for all binaries.
+
+  [ Andrew Shadura ]
+  * New upstream version.
+  * Update debian/copyright file.
+
+ -- Andrew Shadura <andrewsh@debian.org>  Tue, 21 Feb 2017 16:14:52 +0100
+
 matrix-synapse (0.19.1-1) unstable; urgency=medium
 
   [ Erik Johnston ]
