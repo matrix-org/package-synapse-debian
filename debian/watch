@@ -1,5 +1,5 @@
 # Compulsory line, this is a version 3 file
 version=3
 
-opts=filenamemangle=s/.+\/v?(\d\S*)\.tar\.gz/matrix-synapse-$1\.tar\.gz/,uversionmangle=s/-rc/~rc/ \
-  https://github.com/matrix-org/synapse/tags .*/v?(\d\S*)\.tar\.gz debian uupdate
+opts=filenamemangle=s/.+\/v?(\d\S*)\.tar\.gz/matrix-synapse-$1\.tar\.gz/,uversionmangle=s/-rc/~rc/,repacksuffix=+dfsg \
+  https://github.com/matrix-org/synapse/tags .*/v?(\d\S*)\.tar\.gz
