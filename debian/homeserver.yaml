@@ -55,7 +55,7 @@ listeners:
 
     # Local interface to listen on.
     # The empty string will cause synapse to listen on all interfaces.
-    bind_address: ''
+    bind_address: 127.0.0.1
 
     # This is a 'http' listener, allows us to specify 'resources'.
     type: http
@@ -86,7 +86,7 @@ listeners:
   # For when matrix traffic passes through loadbalancer that unwraps TLS.
   - port: 8008
     tls: false
-    bind_address: ''
+    bind_address: 127.0.0.1
     type: http
 
     x_forwarded: false

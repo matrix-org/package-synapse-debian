@@ -4,7 +4,4 @@ export PYBUILD_NAME=matrix-synapse
 %:
 	dh $@ --with python2 --with systemd --buildsystem=pybuild --no-guessing-deps
 
-override_dh_installinit:
-	dh_installinit --no-start
-
 override_dh_auto_test:
