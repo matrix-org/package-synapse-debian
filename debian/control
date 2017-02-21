@@ -28,7 +28,7 @@ Build-Depends:
  python-ujson,
  python-unpaddedbase64 (>= 1.0.1),
  python-yaml
-Standards-Version: 3.9.1
+Standards-Version: 3.9.6
 X-Python-Version: >= 2.7
 
 Package: matrix-synapse
