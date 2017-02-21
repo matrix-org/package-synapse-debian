@@ -1,4 +1,4 @@
-matrix-synapse (0.19.1-1) UNRELEASED; urgency=medium
+matrix-synapse (0.19.1-1) unstable; urgency=medium
 
   [ Erik Johnston ]
   * Initial packaging for the upstream version 0.19.1.
@@ -6,4 +6,4 @@ matrix-synapse (0.19.1-1) UNRELEASED; urgency=medium
   [ Andrew Shadura ]
   * First upload to Debian (Closes: #830601).
 
- -- Andrew Shadura <andrewsh@debian.org>  Fri, 10 Feb 2017 14:15:51 +0100
+ -- Andrew Shadura <andrewsh@debian.org>  Tue, 21 Feb 2017 15:39:04 +0100
