@@ -6,7 +6,7 @@ Description: Name of the server
 
 Template: matrix-synapse/report-stats
 Type: boolean
-Default: true
+Default: false
 Description: Report anonymous stats (yes/no)
  We would really appreciate it if you could help our project out by reporting
  anonymized usage statistics from your homeserver. Only very basic aggregate
