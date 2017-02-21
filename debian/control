@@ -19,7 +19,7 @@ Build-Depends:
  python-pil,
  python-pyasn1,
  python-pydenticon,
- python-pymacaroons-pynacl,
+ python-pymacaroons,
  python-pysaml2,
  python-service-identity (>= 1.0.0),
  python-setuptools (>= 0.6b3),
