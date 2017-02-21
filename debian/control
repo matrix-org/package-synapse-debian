@@ -39,6 +39,7 @@ Depends:
  adduser,
  debconf,
  libjs-jquery,
+ lsb-base (>= 3.0-6),
  python-twisted (>= 16.0.0),
  ${misc:Depends},
  ${python:Depends}
