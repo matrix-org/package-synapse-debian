@@ -1,3 +1,13 @@
+matrix-synapse (0.19.2+dfsg-2) unstable; urgency=medium
+
+  * Move to Section: net.
+  * Add Vcs-*.
+  * Add Homepage.
+  * Use oversionmangle and dversionmangle in debian/watch.
+  * Move Apache-2.0 license text into a separate paragraph.
+
+ -- Andrew Shadura <andrewsh@debian.org>  Tue, 21 Feb 2017 18:32:09 +0100
+
 matrix-synapse (0.19.2+dfsg-1) unstable; urgency=medium
 
   * Don't install upstream's minified jquery, depend on libjs-jquery.
