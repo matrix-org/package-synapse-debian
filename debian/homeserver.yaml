@@ -122,9 +122,7 @@ listeners:
     # On Linux and Mac OS, `::` will listen on all IPv4 and IPv6
     # addresses by default. For most other OSes, this will only listen
     # on IPv6.
-    bind_addresses:
-      - '::'
-      - '0.0.0.0'
+    bind_address: 127.0.0.1
 
     # This is a 'http' listener, allows us to specify 'resources'.
     type: http
@@ -162,7 +160,7 @@ listeners:
   # For when matrix traffic passes through loadbalancer that unwraps TLS.
   - port: 8008
     tls: false
-    bind_addresses: ['::', '0.0.0.0']
+    bind_address: 127.0.0.1
     type: http
 
     x_forwarded: false
