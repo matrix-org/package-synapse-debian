@@ -1,3 +1,12 @@
+From: Andrew Shadura <andrewsh@debian.org>
+Date: Sun, 12 Feb 2017 09:54:56 +0100
+Subject: Use signedjson.sign instead of syutil.crypto.jsonsign
+
+Functions from syutil.crypto.jsonsign are now available in
+signedjson, so use that instead of depending on syutil.
+
+Forwarded: yes
+--
 diff --git a/contrib/cmdclient/console.py b/contrib/cmdclient/console.py
 index 8bb03ce..4918fa1 100755
 --- a/contrib/cmdclient/console.py
