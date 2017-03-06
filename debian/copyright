@@ -6,6 +6,20 @@ Files: *
 Copyright: 2014-2017 OpenMarket Ltd
 License: Apache-2.0
 
+Files: synapse/config/jwt.py
+Copyright: 2015 Niklas Riekenbrauck
+License: Apache-2.0
+
+Files: synapse/config/saml2.py
+Copyright: 2015 Ericsson
+License: Apache-2.0
+
+Files: synapse/config/*
+Copyright:
+ 2014-2017 OpenMarket Ltd
+ 2014-2017 matrix.org
+License: Apache-2.0
+
 License: Apache-2.0
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
