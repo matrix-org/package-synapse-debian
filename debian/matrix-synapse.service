@@ -1,5 +1,6 @@
 [Unit]
 Description=Synapse Matrix homeserver
+ConditionPathExists=/etc/matrix-synapse/conf.d/server_name.yaml
 
 [Service]
 Type=simple
