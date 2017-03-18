@@ -1,3 +1,17 @@
+matrix-synapse (0.19.2+dfsg-5) unstable; urgency=medium
+
+  [ Simó Albert i Beltran ]
+  * When purging remove configuration files created by debian/postinst
+    (Closes: #857428)
+
+  [ Helge Kreutzmann ]
+  * Add initial German debconf translation. (Closes: #857526)
+
+  [ Rahul De ]
+  * Fail silently if server name is not configured (Closes: #857619)
+
+ -- Andrew Shadura <andrewsh@debian.org>  Sat, 18 Mar 2017 11:14:06 +0100
+
 matrix-synapse (0.19.2+dfsg-4) unstable; urgency=medium
 
   * Add bcrypt and pymacaroons to pydist-overrides so that the runtime
