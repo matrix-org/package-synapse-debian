@@ -44,6 +44,8 @@ Depends:
  libjs-jquery,
  lsb-base (>= 3.0-6),
  python-twisted (>= 16.0.0),
+ python-nacl (<< 1.1.0) | python-pymacaroons,
+ python-nacl (>= 1.1.0) | python-pymacaroons-pynacl,
  ${misc:Depends},
  ${python:Depends}
 Suggests:

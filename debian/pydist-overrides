@@ -4,4 +4,4 @@ bleach
 ldap3
 matrix-synapse-ldap3
 py_bcrypt python-bcrypt
-pymacaroons_pynacl python-pymacaroons
+# pymacaroons_pynacl python-pymacaroons
