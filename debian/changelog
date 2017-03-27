@@ -1,3 +1,17 @@
+matrix-synapse (0.19.2+dfsg-6) unstable; urgency=medium
+
+  [ Simó Albert i Beltran ]
+  * Use set -e instead of passes -e to hte shell on the #! at debian/postinst
+
+  [ Rui Branco ]
+  * Add Portuguese translation for debconf messages.
+
+  [ Andrew Shadura ]
+  * Temporarily add an optional dependency on python-pymacaroons-pynacl
+    for python-nacl << 1.1.0.
+
+ -- Andrew Shadura <andrewsh@debian.org>  Mon, 27 Mar 2017 11:52:05 +0200
+
 matrix-synapse (0.19.2+dfsg-5) unstable; urgency=medium
 
   [ Simó Albert i Beltran ]
