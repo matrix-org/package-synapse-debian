@@ -1,3 +1,11 @@
+matrix-synapse (0.19.3+dfsg-1) unstable; urgency=medium
+
+  * New upstream version.
+  * Remove an extra oversionmangle from debian/watch.
+  * Drop a patch applied upstream.
+
+ -- Andrew Shadura <andrewsh@debian.org>  Mon, 27 Mar 2017 12:07:15 +0200
+
 matrix-synapse (0.19.2+dfsg-6) unstable; urgency=medium
 
   [ Simó Albert i Beltran ]
