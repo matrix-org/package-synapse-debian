@@ -6,11 +6,11 @@ Subject: saml2
  synapse/python_dependencies.py | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/synapse/python_dependencies.py b/synapse/python_dependencies.py
-index e0a7a19..25083b8 100644
---- a/synapse/python_dependencies.py
-+++ b/synapse/python_dependencies.py
-@@ -34,7 +34,7 @@ REQUIREMENTS = {
+Index: package-synapse-debian/synapse/python_dependencies.py
+===================================================================
+--- package-synapse-debian.orig/synapse/python_dependencies.py
++++ package-synapse-debian/synapse/python_dependencies.py
+@@ -36,7 +36,7 @@ REQUIREMENTS = {
      "pydenticon": ["pydenticon"],
      "ujson": ["ujson"],
      "blist": ["blist"],
@@ -18,5 +18,4 @@ index e0a7a19..25083b8 100644
 +    "pysaml2>=3.0.0,<4.0.0": ["saml2"],
      "pymacaroons-pynacl": ["pymacaroons"],
      "msgpack-python>=0.3.0": ["msgpack"],
- }
- CONDITIONAL_REQUIREMENTS = {
+     "phonenumbers>=8.2.0": ["phonenumbers"],
