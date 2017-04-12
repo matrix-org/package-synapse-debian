@@ -31,6 +31,7 @@ Build-Depends:
  python-ujson,
  python-yaml,
  python-phonenumbers (>= 8.2.0),
+ python-jsonschema (>=2.5.1),
 Standards-Version: 3.9.8
 X-Python-Version: >= 2.7
 
