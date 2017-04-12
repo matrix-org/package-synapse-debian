@@ -1,3 +1,9 @@
+matrix-synapse (0.20.0-2) xenial; urgency=medium
+
+  * Depend on python-jsonschema
+
+ -- Erik Johnston <erikj@matrix.org>  Wed, 12 Apr 2017 10:41:46 +0100
+
 matrix-synapse (0.20.0-1) jessie; urgency=medium
 
   * Imported upstream version 0.20.0
