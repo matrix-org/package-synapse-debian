@@ -10,7 +10,7 @@ Index: package-synapse-debian/synapse/python_dependencies.py
 ===================================================================
 --- package-synapse-debian.orig/synapse/python_dependencies.py
 +++ package-synapse-debian/synapse/python_dependencies.py
-@@ -22,7 +22,7 @@ REQUIREMENTS = {
+@@ -24,7 +24,7 @@ REQUIREMENTS = {
      "unpaddedbase64>=1.1.0": ["unpaddedbase64>=1.1.0"],
      "canonicaljson>=1.0.0": ["canonicaljson>=1.0.0"],
      "signedjson>=1.0.0": ["signedjson>=1.0.0"],
