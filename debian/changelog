@@ -1,3 +1,9 @@
+matrix-synapse (0.22.0-1) jessie; urgency=medium
+
+  * Imported upstream version 0.22.0
+
+ -- Erik Johnston <erikj@matrix.org>  Thu, 06 Jul 2017 10:47:45 +0100
+
 matrix-synapse (0.21.1-1) jessie; urgency=medium
 
   * Imported upstream version 0.21.1
