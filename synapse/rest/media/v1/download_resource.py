@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import synapse.http.servlet
 
 from ._base import parse_media_id, respond_with_file, respond_404
 from twisted.web.resource import Resource
@@ -65,14 +66,19 @@ class DownloadResource(Resource):
     @defer.inlineCallbacks
     def _respond_local_file(self, request, media_id, name):
         media_info = yield self.store.get_local_media(media_id)
-        if not media_info:
+        if not media_info or media_info["quarantined_by"]:
             respond_404(request)
             return
 
         media_type = media_info["media_type"]
         media_length = media_info["media_length"]
         upload_name = name if name else media_info["upload_name"]
-        file_path = self.filepaths.local_media_filepath(media_id)
+        if media_info["url_cache"]:
+            # TODO: Check the file still exists, if it doesn't we can redownload
+            # it from the url `media_info["url_cache"]`
+            file_path = self.filepaths.url_cache_filepath(media_id)
+        else:
+            file_path = self.filepaths.local_media_filepath(media_id)
 
         yield respond_with_file(
             request, media_type, file_path, media_length,
@@ -81,6 +87,17 @@ class DownloadResource(Resource):
 
     @defer.inlineCallbacks
     def _respond_remote_file(self, request, server_name, media_id, name):
+        # don't forward requests for remote media if allow_remote is false
+        allow_remote = synapse.http.servlet.parse_boolean(
+            request, "allow_remote", default=True)
+        if not allow_remote:
+            logger.info(
+                "Rejecting request for remote media %s/%s due to allow_remote",
+                server_name, media_id,
+            )
+            respond_404(request)
+            return
+
         media_info = yield self.media_repo.get_remote_media(server_name, media_id)
 
         media_type = media_info["media_type"]

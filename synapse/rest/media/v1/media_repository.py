@@ -13,26 +13,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from twisted.internet import defer, threads
+import twisted.internet.error
+import twisted.web.http
+from twisted.web.resource import Resource
+
 from .upload_resource import UploadResource
 from .download_resource import DownloadResource
 from .thumbnail_resource import ThumbnailResource
 from .identicon_resource import IdenticonResource
 from .preview_url_resource import PreviewUrlResource
 from .filepath import MediaFilePaths
-
-from twisted.web.resource import Resource
-
 from .thumbnailer import Thumbnailer
 
 from synapse.http.matrixfederationclient import MatrixFederationHttpClient
 from synapse.util.stringutils import random_string
-from synapse.api.errors import SynapseError
-
-from twisted.internet import defer, threads
+from synapse.api.errors import SynapseError, HttpResponseException, \
+    NotFoundError
 
 from synapse.util.async import Linearizer
 from synapse.util.stringutils import is_ascii
 from synapse.util.logcontext import preserve_context_over_fn
+from synapse.util.retryutils import NotRetryingDestination
 
 import os
 import errno
@@ -133,6 +135,8 @@ class MediaRepository(object):
             media_info = yield self._download_remote_file(
                 server_name, media_id
             )
+        elif media_info["quarantined_by"]:
+            raise NotFoundError()
         else:
             self.recently_accessed_remotes.add((server_name, media_id))
             yield self.store.update_cached_last_access_time(
@@ -157,11 +161,36 @@ class MediaRepository(object):
                 try:
                     length, headers = yield self.client.get_file(
                         server_name, request_path, output_stream=f,
-                        max_size=self.max_upload_size,
+                        max_size=self.max_upload_size, args={
+                            # tell the remote server to 404 if it doesn't
+                            # recognise the server_name, to make sure we don't
+                            # end up with a routing loop.
+                            "allow_remote": "false",
+                        }
                     )
-                except Exception as e:
-                    logger.warn("Failed to fetch remoted media %r", e)
-                    raise SynapseError(502, "Failed to fetch remoted media")
+                except twisted.internet.error.DNSLookupError as e:
+                    logger.warn("HTTP error fetching remote media %s/%s: %r",
+                                server_name, media_id, e)
+                    raise NotFoundError()
+
+                except HttpResponseException as e:
+                    logger.warn("HTTP error fetching remote media %s/%s: %s",
+                                server_name, media_id, e.response)
+                    if e.code == twisted.web.http.NOT_FOUND:
+                        raise SynapseError.from_http_response_exception(e)
+                    raise SynapseError(502, "Failed to fetch remote media")
+
+                except SynapseError:
+                    logger.exception("Failed to fetch remote media %s/%s",
+                                     server_name, media_id)
+                    raise
+                except NotRetryingDestination:
+                    logger.warn("Not retrying destination %r", server_name)
+                    raise SynapseError(502, "Failed to fetch remote media")
+                except Exception:
+                    logger.exception("Failed to fetch remote media %s/%s",
+                                     server_name, media_id)
+                    raise SynapseError(502, "Failed to fetch remote media")
 
             media_type = headers["Content-Type"][0]
             time_now_ms = self.clock.time_msec()
@@ -297,13 +326,17 @@ class MediaRepository(object):
             defer.returnValue(t_path)
 
     @defer.inlineCallbacks
-    def _generate_local_thumbnails(self, media_id, media_info):
+    def _generate_local_thumbnails(self, media_id, media_info, url_cache=False):
         media_type = media_info["media_type"]
         requirements = self._get_thumbnail_requirements(media_type)
         if not requirements:
             return
 
-        input_path = self.filepaths.local_media_filepath(media_id)
+        if url_cache:
+            input_path = self.filepaths.url_cache_filepath(media_id)
+        else:
+            input_path = self.filepaths.local_media_filepath(media_id)
+
         thumbnailer = Thumbnailer(input_path)
         m_width = thumbnailer.width
         m_height = thumbnailer.height
@@ -331,9 +364,14 @@ class MediaRepository(object):
 
             for t_width, t_height, t_type in scales:
                 t_method = "scale"
-                t_path = self.filepaths.local_media_thumbnail(
-                    media_id, t_width, t_height, t_type, t_method
-                )
+                if url_cache:
+                    t_path = self.filepaths.url_cache_thumbnail(
+                        media_id, t_width, t_height, t_type, t_method
+                    )
+                else:
+                    t_path = self.filepaths.local_media_thumbnail(
+                        media_id, t_width, t_height, t_type, t_method
+                    )
                 self._makedirs(t_path)
                 t_len = thumbnailer.scale(t_path, t_width, t_height, t_type)
 
@@ -348,9 +386,14 @@ class MediaRepository(object):
                     # thumbnail.
                     continue
                 t_method = "crop"
-                t_path = self.filepaths.local_media_thumbnail(
-                    media_id, t_width, t_height, t_type, t_method
-                )
+                if url_cache:
+                    t_path = self.filepaths.url_cache_thumbnail(
+                        media_id, t_width, t_height, t_type, t_method
+                    )
+                else:
+                    t_path = self.filepaths.local_media_thumbnail(
+                        media_id, t_width, t_height, t_type, t_method
+                    )
                 self._makedirs(t_path)
                 t_len = thumbnailer.crop(t_path, t_width, t_height, t_type)
                 local_thumbnails.append((

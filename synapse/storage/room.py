@@ -16,7 +16,7 @@
 from twisted.internet import defer
 
 from synapse.api.errors import StoreError
-from synapse.util.caches.descriptors import cached
+from synapse.util.caches.descriptors import cached, cachedInlineCallbacks
 
 from ._base import SQLBaseStore
 from .engines import PostgresEngine, Sqlite3Engine
@@ -24,6 +24,7 @@ from .engines import PostgresEngine, Sqlite3Engine
 import collections
 import logging
 import ujson as json
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +32,11 @@ logger = logging.getLogger(__name__)
 OpsLevel = collections.namedtuple(
     "OpsLevel",
     ("ban_level", "kick_level", "redact_level",)
+)
+
+RatelimitOverride = collections.namedtuple(
+    "RatelimitOverride",
+    ("messages_per_second", "burst_count",)
 )
 
 
@@ -396,7 +402,7 @@ class RoomStore(SQLBaseStore):
                     sql % ("AND appservice_id IS NULL",),
                     (stream_id,)
                 )
-            return dict(txn.fetchall())
+            return dict(txn)
         else:
             # We want to get from all lists, so we need to aggregate the results
 
@@ -422,7 +428,7 @@ class RoomStore(SQLBaseStore):
 
             results = {}
             # A room is visible if its visible on any list.
-            for room_id, visibility in txn.fetchall():
+            for room_id, visibility in txn:
                 results[room_id] = bool(visibility) or results.get(room_id, False)
 
             return results
@@ -473,3 +479,127 @@ class RoomStore(SQLBaseStore):
         return self.runInteraction(
             "get_all_new_public_rooms", get_all_new_public_rooms
         )
+
+    @cachedInlineCallbacks(max_entries=10000)
+    def get_ratelimit_for_user(self, user_id):
+        """Check if there are any overrides for ratelimiting for the given
+        user
+
+        Args:
+            user_id (str)
+
+        Returns:
+            RatelimitOverride if there is an override, else None. If the contents
+            of RatelimitOverride are None or 0 then ratelimitng has been
+            disabled for that user entirely.
+        """
+        row = yield self._simple_select_one(
+            table="ratelimit_override",
+            keyvalues={"user_id": user_id},
+            retcols=("messages_per_second", "burst_count"),
+            allow_none=True,
+            desc="get_ratelimit_for_user",
+        )
+
+        if row:
+            defer.returnValue(RatelimitOverride(
+                messages_per_second=row["messages_per_second"],
+                burst_count=row["burst_count"],
+            ))
+        else:
+            defer.returnValue(None)
+
+    @cached(max_entries=10000)
+    def is_room_blocked(self, room_id):
+        return self._simple_select_one_onecol(
+            table="blocked_rooms",
+            keyvalues={
+                "room_id": room_id,
+            },
+            retcol="1",
+            allow_none=True,
+            desc="is_room_blocked",
+        )
+
+    @defer.inlineCallbacks
+    def block_room(self, room_id, user_id):
+        yield self._simple_insert(
+            table="blocked_rooms",
+            values={
+                "room_id": room_id,
+                "user_id": user_id,
+            },
+            desc="block_room",
+        )
+        self.is_room_blocked.invalidate((room_id,))
+
+    def quarantine_media_ids_in_room(self, room_id, quarantined_by):
+        """For a room loops through all events with media and quarantines
+        the associated media
+        """
+        def _get_media_ids_in_room(txn):
+            mxc_re = re.compile("^mxc://([^/]+)/([^/#?]+)")
+
+            next_token = self.get_current_events_token() + 1
+
+            total_media_quarantined = 0
+
+            while next_token:
+                sql = """
+                    SELECT stream_ordering, content FROM events
+                    WHERE room_id = ?
+                        AND stream_ordering < ?
+                        AND contains_url = ? AND outlier = ?
+                    ORDER BY stream_ordering DESC
+                    LIMIT ?
+                """
+                txn.execute(sql, (room_id, next_token, True, False, 100))
+
+                next_token = None
+                local_media_mxcs = []
+                remote_media_mxcs = []
+                for stream_ordering, content_json in txn:
+                    next_token = stream_ordering
+                    content = json.loads(content_json)
+
+                    content_url = content.get("url")
+                    thumbnail_url = content.get("info", {}).get("thumbnail_url")
+
+                    for url in (content_url, thumbnail_url):
+                        if not url:
+                            continue
+                        matches = mxc_re.match(url)
+                        if matches:
+                            hostname = matches.group(1)
+                            media_id = matches.group(2)
+                            if hostname == self.hostname:
+                                local_media_mxcs.append(media_id)
+                            else:
+                                remote_media_mxcs.append((hostname, media_id))
+
+                # Now update all the tables to set the quarantined_by flag
+
+                txn.executemany("""
+                    UPDATE local_media_repository
+                    SET quarantined_by = ?
+                    WHERE media_id = ?
+                """, ((quarantined_by, media_id) for media_id in local_media_mxcs))
+
+                txn.executemany(
+                    """
+                        UPDATE remote_media_cache
+                        SET quarantined_by = ?
+                        WHERE media_origin AND media_id = ?
+                    """,
+                    (
+                        (quarantined_by, origin, media_id)
+                        for origin, media_id in remote_media_mxcs
+                    )
+                )
+
+                total_media_quarantined += len(local_media_mxcs)
+                total_media_quarantined += len(remote_media_mxcs)
+
+            return total_media_quarantined
+
+        return self.runInteraction("get_media_ids_in_room", _get_media_ids_in_room)

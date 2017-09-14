@@ -16,11 +16,10 @@
 from twisted.internet import defer
 
 from synapse.api.constants import EventTypes, Membership
-from synapse.api.errors import AuthError, Codes, SynapseError, LimitExceededError
+from synapse.api.errors import AuthError, Codes, SynapseError
 from synapse.crypto.event_signing import add_hashes_and_signatures
 from synapse.events.utils import serialize_event
 from synapse.events.validator import EventValidator
-from synapse.push.action_generator import ActionGenerator
 from synapse.types import (
     UserID, RoomAlias, RoomStreamToken,
 )
@@ -35,6 +34,7 @@ from canonicaljson import encode_canonical_json
 
 import logging
 import random
+import ujson
 
 logger = logging.getLogger(__name__)
 
@@ -50,9 +50,13 @@ class MessageHandler(BaseHandler):
 
         self.pagination_lock = ReadWriteLock()
 
+        self.pusher_pool = hs.get_pusherpool()
+
         # We arbitrarily limit concurrent event creation for a room to 5.
         # This is to stop us from diverging history *too* much.
         self.limiter = Limiter(max_count=5)
+
+        self.action_generator = hs.get_action_generator()
 
     @defer.inlineCallbacks
     def purge_history(self, room_id, event_id):
@@ -175,7 +179,8 @@ class MessageHandler(BaseHandler):
         defer.returnValue(chunk)
 
     @defer.inlineCallbacks
-    def create_event(self, event_dict, token_id=None, txn_id=None, prev_event_ids=None):
+    def create_event(self, requester, event_dict, token_id=None, txn_id=None,
+                     prev_event_ids=None):
         """
         Given a dict from a client, create a new event.
 
@@ -185,6 +190,7 @@ class MessageHandler(BaseHandler):
         Adds display names to Join membership events.
 
         Args:
+            requester
             event_dict (dict): An entire event
             token_id (str)
             txn_id (str)
@@ -226,6 +232,7 @@ class MessageHandler(BaseHandler):
 
             event, context = yield self._create_new_client_event(
                 builder=builder,
+                requester=requester,
                 prev_event_ids=prev_event_ids,
             )
 
@@ -251,17 +258,7 @@ class MessageHandler(BaseHandler):
         # We check here if we are currently being rate limited, so that we
         # don't do unnecessary work. We check again just before we actually
         # send the event.
-        time_now = self.clock.time()
-        allowed, time_allowed = self.ratelimiter.send_message(
-            event.sender, time_now,
-            msg_rate_hz=self.hs.config.rc_messages_per_second,
-            burst_count=self.hs.config.rc_message_burst_count,
-            update=False,
-        )
-        if not allowed:
-            raise LimitExceededError(
-                retry_after_ms=int(1000 * (time_allowed - time_now)),
-            )
+        yield self.ratelimit(requester, update=False)
 
         user = UserID.from_string(event.sender)
 
@@ -319,6 +316,7 @@ class MessageHandler(BaseHandler):
         See self.create_event and self.send_nonmember_event.
         """
         event, context = yield self.create_event(
+            requester,
             event_dict,
             token_id=requester.access_token_id,
             txn_id=txn_id
@@ -416,7 +414,7 @@ class MessageHandler(BaseHandler):
 
     @measure_func("_create_new_client_event")
     @defer.inlineCallbacks
-    def _create_new_client_event(self, builder, prev_event_ids=None):
+    def _create_new_client_event(self, builder, requester=None, prev_event_ids=None):
         if prev_event_ids:
             prev_events = yield self.store.add_event_hashes(prev_event_ids)
             prev_max_depth = yield self.store.get_max_depth_of_events(prev_event_ids)
@@ -456,6 +454,8 @@ class MessageHandler(BaseHandler):
         state_handler = self.state_handler
 
         context = yield state_handler.compute_event_context(builder)
+        if requester:
+            context.app_service = requester.app_service
 
         if builder.is_state():
             builder.prev_state = yield self.store.add_event_hashes(
@@ -493,13 +493,21 @@ class MessageHandler(BaseHandler):
         # We now need to go and hit out to wherever we need to hit out to.
 
         if ratelimit:
-            self.ratelimit(requester)
+            yield self.ratelimit(requester)
 
         try:
             yield self.auth.check_from_context(event, context)
         except AuthError as err:
             logger.warn("Denying new event %r because %s", event, err)
             raise err
+
+        # Ensure that we can round trip before trying to persist in db
+        try:
+            dump = ujson.dumps(event.content)
+            ujson.loads(dump)
+        except:
+            logger.exception("Failed to encode content: %r", event.content)
+            raise
 
         yield self.maybe_kick_guest_users(event, context)
 
@@ -531,9 +539,9 @@ class MessageHandler(BaseHandler):
 
                 state_to_include_ids = [
                     e_id
-                    for k, e_id in context.current_state_ids.items()
+                    for k, e_id in context.current_state_ids.iteritems()
                     if k[0] in self.hs.config.room_invite_state_types
-                    or k[0] == EventTypes.Member and k[1] == event.sender
+                    or k == (EventTypes.Member, event.sender)
                 ]
 
                 state_to_include = yield self.store.get_events(state_to_include_ids)
@@ -545,7 +553,7 @@ class MessageHandler(BaseHandler):
                         "content": e.content,
                         "sender": e.sender,
                     }
-                    for e in state_to_include.values()
+                    for e in state_to_include.itervalues()
                 ]
 
                 invitee = UserID.from_string(event.state_key)
@@ -594,8 +602,7 @@ class MessageHandler(BaseHandler):
                 "Changing the room create event is forbidden",
             )
 
-        action_generator = ActionGenerator(self.hs)
-        yield action_generator.handle_push_actions_for_event(
+        yield self.action_generator.handle_push_actions_for_event(
             event, context
         )
 
@@ -605,19 +612,16 @@ class MessageHandler(BaseHandler):
 
         # this intentionally does not yield: we don't care about the result
         # and don't need to wait for it.
-        preserve_fn(self.hs.get_pusherpool().on_new_notifications)(
+        preserve_fn(self.pusher_pool.on_new_notifications)(
             event_stream_id, max_stream_id
         )
 
         @defer.inlineCallbacks
         def _notify():
             yield run_on_reactor()
-            yield self.notifier.on_new_room_event(
+            self.notifier.on_new_room_event(
                 event, event_stream_id, max_stream_id,
                 extra_users=extra_users
             )
 
         preserve_fn(_notify)()
-
-        # If invite, remove room_state from unsigned before sending.
-        event.unsigned.pop("invite_room_state", None)

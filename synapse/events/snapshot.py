@@ -15,6 +15,32 @@
 
 
 class EventContext(object):
+    """
+    Attributes:
+        current_state_ids (dict[(str, str), str]):
+            The current state map including the current event.
+            (type, state_key) -> event_id
+
+        prev_state_ids (dict[(str, str), str]):
+            The current state map excluding the current event.
+            (type, state_key) -> event_id
+
+        state_group (int): state group id
+        rejected (bool|str): A rejection reason if the event was rejected, else
+            False
+
+        push_actions (list[(str, list[object])]): list of (user_id, actions)
+            tuples
+
+        prev_group (int): Previously persisted state group. ``None`` for an
+            outlier.
+        delta_ids (dict[(str, str), str]): Delta from ``prev_group``.
+            (type, state_key) -> event_id. ``None`` for an outlier.
+
+        prev_state_events (?): XXX: is this ever set to anything other than
+            the empty list?
+    """
+
     __slots__ = [
         "current_state_ids",
         "prev_state_ids",
@@ -24,6 +50,7 @@ class EventContext(object):
         "prev_group",
         "delta_ids",
         "prev_state_events",
+        "app_service",
     ]
 
     def __init__(self):
@@ -42,3 +69,5 @@ class EventContext(object):
         self.delta_ids = None
 
         self.prev_state_events = None
+
+        self.app_service = None

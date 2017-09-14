@@ -20,10 +20,12 @@ import gc
 import logging
 import os
 import sys
+
+import synapse.config.logger
 from synapse.config._base import ConfigError
 
 from synapse.python_dependencies import (
-    check_requirements, DEPENDENCY_LINKS
+    check_requirements, CONDITIONAL_REQUIREMENTS
 )
 
 from synapse.rest import ClientRestResource
@@ -33,7 +35,7 @@ from synapse.storage.prepare_database import UpgradeDatabaseException, prepare_d
 
 from synapse.server import HomeServer
 
-from twisted.internet import reactor, task, defer
+from twisted.internet import reactor, defer
 from twisted.application import service
 from twisted.web.resource import Resource, EncodingResourceWrapper
 from twisted.web.static import File
@@ -50,10 +52,10 @@ from synapse.api.urls import (
 )
 from synapse.config.homeserver import HomeServerConfig
 from synapse.crypto import context_factory
-from synapse.util.logcontext import LoggingContext
-from synapse.metrics import register_memory_metrics, get_metrics_for
+from synapse.util.logcontext import LoggingContext, PreserveLoggingContext
+from synapse.metrics import register_memory_metrics
 from synapse.metrics.resource import MetricsResource, METRICS_PREFIX
-from synapse.replication.resource import ReplicationResource, REPLICATION_PREFIX
+from synapse.replication.tcp.resource import ReplicationStreamProtocolFactory
 from synapse.federation.transport.server import TransportLayerServer
 
 from synapse.util.rlimit import change_resource_limit
@@ -90,7 +92,7 @@ def build_resource_for_web_client(hs):
                 "\n"
                 "You can also disable hosting of the webclient via the\n"
                 "configuration option `web_client`\n"
-                % {"dep": DEPENDENCY_LINKS["matrix-angular-sdk"]}
+                % {"dep": CONDITIONAL_REQUIREMENTS["web_client"].keys()[0]}
             )
         syweb_path = os.path.dirname(syweb.__file__)
         webclient_path = os.path.join(syweb_path, "webclient")
@@ -164,9 +166,6 @@ class SynapseHomeServer(HomeServer):
                 if name == "metrics" and self.get_config().enable_metrics:
                     resources[METRICS_PREFIX] = MetricsResource(self)
 
-                if name == "replication":
-                    resources[REPLICATION_PREFIX] = ReplicationResource(self)
-
         if WEB_CLIENT_PREFIX in resources:
             root_resource = RootRedirect(WEB_CLIENT_PREFIX)
         else:
@@ -219,6 +218,16 @@ class SynapseHomeServer(HomeServer):
                             globals={"hs": self},
                         ),
                         interface=address
+                    )
+            elif listener["type"] == "replication":
+                bind_addresses = listener["bind_addresses"]
+                for address in bind_addresses:
+                    factory = ReplicationStreamProtocolFactory(self)
+                    server_listener = reactor.listenTCP(
+                        listener["port"], factory, interface=address
+                    )
+                    reactor.addSystemEventTrigger(
+                        "before", "shutdown", server_listener.stopListening,
                     )
             else:
                 logger.warn("Unrecognized listener type: %s", listener["type"])
@@ -286,7 +295,7 @@ def setup(config_options):
         # generating config files and shouldn't try to continue.
         sys.exit(0)
 
-    config.setup_logging()
+    synapse.config.logger.setup_logging(config, use_worker_options=False)
 
     # check any extra requirements we have now we have a config
     check_requirements(config)
@@ -389,7 +398,8 @@ def run(hs):
         ThreadPool._worker = profile(ThreadPool._worker)
         reactor.run = profile(reactor.run)
 
-    start_time = hs.get_clock().time()
+    clock = hs.get_clock()
+    start_time = clock.time()
 
     stats = {}
 
@@ -401,41 +411,23 @@ def run(hs):
         if uptime < 0:
             uptime = 0
 
-        # If the stats directory is empty then this is the first time we've
-        # reported stats.
-        first_time = not stats
-
         stats["homeserver"] = hs.config.server_name
         stats["timestamp"] = now
         stats["uptime_seconds"] = uptime
         stats["total_users"] = yield hs.get_datastore().count_all_users()
 
+        total_nonbridged_users = yield hs.get_datastore().count_nonbridged_users()
+        stats["total_nonbridged_users"] = total_nonbridged_users
+
         room_count = yield hs.get_datastore().get_room_count()
         stats["total_room_count"] = room_count
 
         stats["daily_active_users"] = yield hs.get_datastore().count_daily_users()
-        daily_messages = yield hs.get_datastore().count_daily_messages()
-        if daily_messages is not None:
-            stats["daily_messages"] = daily_messages
-        else:
-            stats.pop("daily_messages", None)
+        stats["daily_active_rooms"] = yield hs.get_datastore().count_daily_active_rooms()
+        stats["daily_messages"] = yield hs.get_datastore().count_daily_messages()
 
-        if first_time:
-            # Add callbacks to report the synapse stats as metrics whenever
-            # prometheus requests them, typically every 30s.
-            # As some of the stats are expensive to calculate we only update
-            # them when synapse phones home to matrix.org every 24 hours.
-            metrics = get_metrics_for("synapse.usage")
-            metrics.add_callback("timestamp", lambda: stats["timestamp"])
-            metrics.add_callback("uptime_seconds", lambda: stats["uptime_seconds"])
-            metrics.add_callback("total_users", lambda: stats["total_users"])
-            metrics.add_callback("total_room_count", lambda: stats["total_room_count"])
-            metrics.add_callback(
-                "daily_active_users", lambda: stats["daily_active_users"]
-            )
-            metrics.add_callback(
-                "daily_messages", lambda: stats.get("daily_messages", 0)
-            )
+        daily_sent_messages = yield hs.get_datastore().count_daily_sent_messages()
+        stats["daily_sent_messages"] = daily_sent_messages
 
         logger.info("Reporting stats to matrix.org: %s" % (stats,))
         try:
@@ -447,14 +439,22 @@ def run(hs):
             logger.warn("Error reporting stats: %s", e)
 
     if hs.config.report_stats:
-        phone_home_task = task.LoopingCall(phone_stats_home)
-        logger.info("Scheduling stats reporting for 24 hour intervals")
-        phone_home_task.start(60 * 60 * 24, now=False)
+        logger.info("Scheduling stats reporting for 3 hour intervals")
+        clock.looping_call(phone_stats_home, 3 * 60 * 60 * 1000)
+
+        # We wait 5 minutes to send the first set of stats as the server can
+        # be quite busy the first few minutes
+        clock.call_later(5 * 60, phone_stats_home)
 
     def in_thread():
         # Uncomment to enable tracing of log context changes.
         # sys.settrace(logcontext_tracer)
-        with LoggingContext("run"):
+
+        # make sure that we run the reactor with the sentinel log context,
+        # otherwise other PreserveLoggingContext instances will get confused
+        # and complain when they see the logcontext arbitrarily swapping
+        # between the sentinel and `run` logcontexts.
+        with PreserveLoggingContext():
             change_resource_limit(hs.config.soft_file_limit)
             if hs.config.gc_thresholds:
                 gc.set_threshold(*hs.config.gc_thresholds)

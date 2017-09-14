@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2014 - 2016 OpenMarket Ltd
+# Copyright 2017 Vector Creations Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,6 +21,7 @@ from synapse.api.constants import LoginType
 from synapse.types import UserID
 from synapse.api.errors import AuthError, LoginError, Codes, StoreError, SynapseError
 from synapse.util.async import run_on_reactor
+from synapse.util.caches.expiringcache import ExpiringCache
 
 from twisted.web.client import PartialDownloadError
 
@@ -47,10 +49,19 @@ class AuthHandler(BaseHandler):
             LoginType.PASSWORD: self._check_password_auth,
             LoginType.RECAPTCHA: self._check_recaptcha,
             LoginType.EMAIL_IDENTITY: self._check_email_identity,
+            LoginType.MSISDN: self._check_msisdn,
             LoginType.DUMMY: self._check_dummy_auth,
         }
         self.bcrypt_rounds = hs.config.bcrypt_rounds
-        self.sessions = {}
+
+        # This is not a cache per se, but a store of all current sessions that
+        # expire after N hours
+        self.sessions = ExpiringCache(
+            cache_name="register_sessions",
+            clock=hs.get_clock(),
+            expiry_ms=self.SESSION_EXPIRE_MS,
+            reset_expiry_on_get=True,
+        )
 
         account_handler = _AccountHandler(
             hs, check_user_exists=self.check_user_exists
@@ -307,30 +318,46 @@ class AuthHandler(BaseHandler):
                 defer.returnValue(True)
         raise LoginError(401, "", errcode=Codes.UNAUTHORIZED)
 
-    @defer.inlineCallbacks
     def _check_email_identity(self, authdict, _):
+        return self._check_threepid('email', authdict)
+
+    def _check_msisdn(self, authdict, _):
+        return self._check_threepid('msisdn', authdict)
+
+    @defer.inlineCallbacks
+    def _check_dummy_auth(self, authdict, _):
+        yield run_on_reactor()
+        defer.returnValue(True)
+
+    @defer.inlineCallbacks
+    def _check_threepid(self, medium, authdict):
         yield run_on_reactor()
 
         if 'threepid_creds' not in authdict:
             raise LoginError(400, "Missing threepid_creds", Codes.MISSING_PARAM)
 
         threepid_creds = authdict['threepid_creds']
+
         identity_handler = self.hs.get_handlers().identity_handler
 
-        logger.info("Getting validated threepid. threepidcreds: %r" % (threepid_creds,))
+        logger.info("Getting validated threepid. threepidcreds: %r", (threepid_creds,))
         threepid = yield identity_handler.threepid_from_creds(threepid_creds)
 
         if not threepid:
             raise LoginError(401, "", errcode=Codes.UNAUTHORIZED)
 
+        if threepid['medium'] != medium:
+            raise LoginError(
+                401,
+                "Expecting threepid of type '%s', got '%s'" % (
+                    medium, threepid['medium'],
+                ),
+                errcode=Codes.UNAUTHORIZED
+            )
+
         threepid['threepid_creds'] = authdict['threepid_creds']
 
         defer.returnValue(threepid)
-
-    @defer.inlineCallbacks
-    def _check_dummy_auth(self, authdict, _):
-        yield run_on_reactor()
-        defer.returnValue(True)
 
     def _get_params_recaptcha(self):
         return {"public_key": self.hs.config.recaptcha_public_key}
@@ -599,16 +626,6 @@ class AuthHandler(BaseHandler):
         logger.debug("Saving session %s", session)
         session["last_used"] = self.hs.get_clock().time_msec()
         self.sessions[session["id"]] = session
-        self._prune_sessions()
-
-    def _prune_sessions(self):
-        for sid, sess in self.sessions.items():
-            last_used = 0
-            if 'last_used' in sess:
-                last_used = sess['last_used']
-            now = self.hs.get_clock().time_msec()
-            if last_used < now - AuthHandler.SESSION_EXPIRE_MS:
-                del self.sessions[sid]
 
     def hash(self, password):
         """Computes a secure hash of password.
