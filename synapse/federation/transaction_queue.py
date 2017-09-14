@@ -372,6 +372,12 @@ class TransactionQueue(object):
         try:
             self.pending_transactions[destination] = 1
 
+            # This will throw if we wouldn't retry. We do this here so we fail
+            # quickly, but we will later check this again in the http client,
+            # hence why we throw the result away.
+            yield get_retry_limiter(destination, self.clock, self.store)
+
+            # XXX: what's this for?
             yield run_on_reactor()
 
             pending_pdus = []
