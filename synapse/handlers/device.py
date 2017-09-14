@@ -17,6 +17,7 @@ from synapse.api.constants import EventTypes
 from synapse.util import stringutils
 from synapse.util.async import Linearizer
 from synapse.util.caches.expiringcache import ExpiringCache
+from synapse.util.retryutils import NotRetryingDestination
 from synapse.util.metrics import measure_func
 from synapse.types import get_domain_from_id, RoomStreamToken
 from twisted.internet import defer
@@ -105,7 +106,7 @@ class DeviceHandler(BaseHandler):
         device_map = yield self.store.get_devices_by_user(user_id)
 
         ips = yield self.store.get_last_client_ip_by_device(
-            devices=((user_id, device_id) for device_id in device_map.keys())
+            user_id, device_id=None
         )
 
         devices = device_map.values()
@@ -132,7 +133,7 @@ class DeviceHandler(BaseHandler):
         except errors.StoreError:
             raise errors.NotFoundError
         ips = yield self.store.get_last_client_ip_by_device(
-            devices=((user_id, device_id),)
+            user_id, device_id,
         )
         _update_device_from_client_ips(device, ips)
         defer.returnValue(device)
@@ -168,6 +169,40 @@ class DeviceHandler(BaseHandler):
         )
 
         yield self.notify_device_update(user_id, [device_id])
+
+    @defer.inlineCallbacks
+    def delete_devices(self, user_id, device_ids):
+        """ Delete several devices
+
+        Args:
+            user_id (str):
+            device_ids (str): The list of device IDs to delete
+
+        Returns:
+            defer.Deferred:
+        """
+
+        try:
+            yield self.store.delete_devices(user_id, device_ids)
+        except errors.StoreError, e:
+            if e.code == 404:
+                # no match
+                pass
+            else:
+                raise
+
+        # Delete access tokens and e2e keys for each device. Not optimised as it is not
+        # considered as part of a critical path.
+        for device_id in device_ids:
+            yield self.store.user_delete_access_tokens(
+                user_id, device_id=device_id,
+                delete_refresh_tokens=True,
+            )
+            yield self.store.delete_e2e_keys_by_device(
+                user_id=user_id, device_id=device_id
+            )
+
+        yield self.notify_device_update(user_id, device_ids)
 
     @defer.inlineCallbacks
     def update_device(self, user_id, device_id, content):
@@ -214,8 +249,7 @@ class DeviceHandler(BaseHandler):
             user_id, device_ids, list(hosts)
         )
 
-        rooms = yield self.store.get_rooms_for_user(user_id)
-        room_ids = [r.room_id for r in rooms]
+        room_ids = yield self.store.get_rooms_for_user(user_id)
 
         yield self.notifier.on_new_event(
             "device_list_key", position, rooms=room_ids,
@@ -236,8 +270,7 @@ class DeviceHandler(BaseHandler):
             user_id (str)
             from_token (StreamToken)
         """
-        rooms = yield self.store.get_rooms_for_user(user_id)
-        room_ids = set(r.room_id for r in rooms)
+        room_ids = yield self.store.get_rooms_for_user(user_id)
 
         # First we check if any devices have changed
         changed = yield self.store.get_user_whose_devices_changed(
@@ -262,7 +295,7 @@ class DeviceHandler(BaseHandler):
                 # ordering: treat it the same as a new room
                 event_ids = []
 
-            current_state_ids = yield self.state.get_current_state_ids(room_id)
+            current_state_ids = yield self.store.get_current_state_ids(room_id)
 
             # special-case for an empty prev state: include all members
             # in the changed list
@@ -313,8 +346,8 @@ class DeviceHandler(BaseHandler):
     @defer.inlineCallbacks
     def user_left_room(self, user, room_id):
         user_id = user.to_string()
-        rooms = yield self.store.get_rooms_for_user(user_id)
-        if not rooms:
+        room_ids = yield self.store.get_rooms_for_user(user_id)
+        if not room_ids:
             # We no longer share rooms with this user, so we'll no longer
             # receive device updates. Mark this in DB.
             yield self.store.mark_remote_user_device_list_as_unsubscribed(user_id)
@@ -370,8 +403,8 @@ class DeviceListEduUpdater(object):
             logger.warning("Got device list update edu for %r from %r", user_id, origin)
             return
 
-        rooms = yield self.store.get_rooms_for_user(user_id)
-        if not rooms:
+        room_ids = yield self.store.get_rooms_for_user(user_id)
+        if not room_ids:
             # We don't share any rooms with this user. Ignore update, as we
             # probably won't get any further updates.
             return
@@ -393,12 +426,38 @@ class DeviceListEduUpdater(object):
                 # This can happen since we batch updates
                 return
 
+            # Given a list of updates we check if we need to resync. This
+            # happens if we've missed updates.
             resync = yield self._need_to_do_resync(user_id, pending_updates)
 
             if resync:
                 # Fetch all devices for the user.
                 origin = get_domain_from_id(user_id)
-                result = yield self.federation.query_user_devices(origin, user_id)
+                try:
+                    result = yield self.federation.query_user_devices(origin, user_id)
+                except NotRetryingDestination:
+                    # TODO: Remember that we are now out of sync and try again
+                    # later
+                    logger.warn(
+                        "Failed to handle device list update for %s,"
+                        " we're not retrying the remote",
+                        user_id,
+                    )
+                    # We abort on exceptions rather than accepting the update
+                    # as otherwise synapse will 'forget' that its device list
+                    # is out of date. If we bail then we will retry the resync
+                    # next time we get a device list update for this user_id.
+                    # This makes it more likely that the device lists will
+                    # eventually become consistent.
+                    return
+                except Exception:
+                    # TODO: Remember that we are now out of sync and try again
+                    # later
+                    logger.exception(
+                        "Failed to handle device list update for %s", user_id
+                    )
+                    return
+
                 stream_id = result["stream_id"]
                 devices = result["devices"]
                 yield self.store.update_remote_device_list_cache(

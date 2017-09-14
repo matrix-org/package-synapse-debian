@@ -163,6 +163,7 @@ class TransportLayerClient(object):
             data=json_data,
             json_data_callback=json_data_callback,
             long_retries=True,
+            backoff_on_404=True,  # If we get a 404 the other side has gone
         )
 
         logger.debug(
@@ -174,7 +175,8 @@ class TransportLayerClient(object):
 
     @defer.inlineCallbacks
     @log_function
-    def make_query(self, destination, query_type, args, retry_on_dns_fail):
+    def make_query(self, destination, query_type, args, retry_on_dns_fail,
+                   ignore_backoff=False):
         path = PREFIX + "/query/%s" % query_type
 
         content = yield self.client.get_json(
@@ -183,6 +185,7 @@ class TransportLayerClient(object):
             args=args,
             retry_on_dns_fail=retry_on_dns_fail,
             timeout=10000,
+            ignore_backoff=ignore_backoff,
         )
 
         defer.returnValue(content)
@@ -190,6 +193,26 @@ class TransportLayerClient(object):
     @defer.inlineCallbacks
     @log_function
     def make_membership_event(self, destination, room_id, user_id, membership):
+        """Asks a remote server to build and sign us a membership event
+
+        Note that this does not append any events to any graphs.
+
+        Args:
+            destination (str): address of remote homeserver
+            room_id (str): room to join/leave
+            user_id (str): user to be joined/left
+            membership (str): one of join/leave
+
+        Returns:
+            Deferred: Succeeds when we get a 2xx HTTP response. The result
+            will be the decoded JSON body (ie, the new event).
+
+            Fails with ``HTTPRequestException`` if we get an HTTP response
+            code >= 300.
+
+            Fails with ``NotRetryingDestination`` if we are not yet ready
+            to retry this server.
+        """
         valid_memberships = {Membership.JOIN, Membership.LEAVE}
         if membership not in valid_memberships:
             raise RuntimeError(
@@ -198,11 +221,23 @@ class TransportLayerClient(object):
             )
         path = PREFIX + "/make_%s/%s/%s" % (membership, room_id, user_id)
 
+        ignore_backoff = False
+        retry_on_dns_fail = False
+
+        if membership == Membership.LEAVE:
+            # we particularly want to do our best to send leave events. The
+            # problem is that if it fails, we won't retry it later, so if the
+            # remote server was just having a momentary blip, the room will be
+            # out of sync.
+            ignore_backoff = True
+            retry_on_dns_fail = True
+
         content = yield self.client.get_json(
             destination=destination,
             path=path,
-            retry_on_dns_fail=False,
+            retry_on_dns_fail=retry_on_dns_fail,
             timeout=20000,
+            ignore_backoff=ignore_backoff,
         )
 
         defer.returnValue(content)
@@ -229,6 +264,12 @@ class TransportLayerClient(object):
             destination=destination,
             path=path,
             data=content,
+
+            # we want to do our best to send this through. The problem is
+            # that if it fails, we won't retry it later, so if the remote
+            # server was just having a momentary blip, the room will be out of
+            # sync.
+            ignore_backoff=True,
         )
 
         defer.returnValue(response)
@@ -242,6 +283,7 @@ class TransportLayerClient(object):
             destination=destination,
             path=path,
             data=content,
+            ignore_backoff=True,
         )
 
         defer.returnValue(response)
@@ -269,6 +311,7 @@ class TransportLayerClient(object):
             destination=remote_server,
             path=path,
             args=args,
+            ignore_backoff=True,
         )
 
         defer.returnValue(response)

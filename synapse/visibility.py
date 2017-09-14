@@ -56,7 +56,8 @@ def filter_events_for_clients(store, user_tuples, events, event_id_to_state):
         events ([synapse.events.EventBase]): list of events to filter
     """
     forgotten = yield preserve_context_over_deferred(defer.gatherResults([
-        preserve_fn(store.who_forgot_in_room)(
+        defer.maybeDeferred(
+            preserve_fn(store.who_forgot_in_room),
             room_id,
         )
         for room_id in frozenset(e.room_id for e in events)
@@ -133,6 +134,13 @@ def filter_events_for_clients(store, user_tuples, events, event_id_to_state):
             prev_membership = prev_content.get("membership", None)
             if prev_membership not in MEMBERSHIP_PRIORITY:
                 prev_membership = "leave"
+
+            # Always allow the user to see their own leave events, otherwise
+            # they won't see the room disappear if they reject the invite
+            if membership == "leave" and (
+                prev_membership == "join" or prev_membership == "invite"
+            ):
+                return True
 
             new_priority = MEMBERSHIP_PRIORITY.index(membership)
             old_priority = MEMBERSHIP_PRIORITY.index(prev_membership)

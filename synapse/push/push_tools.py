@@ -17,15 +17,12 @@ from twisted.internet import defer
 from synapse.push.presentable_names import (
     calculate_room_name, name_from_member_event
 )
-from synapse.util.logcontext import preserve_fn, preserve_context_over_deferred
 
 
 @defer.inlineCallbacks
 def get_badge_count(store, user_id):
-    invites, joins = yield preserve_context_over_deferred(defer.gatherResults([
-        preserve_fn(store.get_invited_rooms_for_user)(user_id),
-        preserve_fn(store.get_rooms_for_user)(user_id),
-    ], consumeErrors=True))
+    invites = yield store.get_invited_rooms_for_user(user_id)
+    joins = yield store.get_rooms_for_user(user_id)
 
     my_receipts_by_room = yield store.get_receipts_for_user(
         user_id, "m.read",
@@ -33,13 +30,13 @@ def get_badge_count(store, user_id):
 
     badge = len(invites)
 
-    for r in joins:
-        if r.room_id in my_receipts_by_room:
-            last_unread_event_id = my_receipts_by_room[r.room_id]
+    for room_id in joins:
+        if room_id in my_receipts_by_room:
+            last_unread_event_id = my_receipts_by_room[room_id]
 
             notifs = yield (
                 store.get_unread_event_push_actions_by_room_for_user(
-                    r.room_id, user_id, last_unread_event_id
+                    room_id, user_id, last_unread_event_id
                 )
             )
             # return one badge count per conversation, as count per

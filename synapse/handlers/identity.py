@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2015, 2016 OpenMarket Ltd
+# Copyright 2017 Vector Creations Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,7 +18,7 @@
 from twisted.internet import defer
 
 from synapse.api.errors import (
-    CodeMessageException
+    MatrixCodeMessageException, CodeMessageException
 )
 from ._base import BaseHandler
 from synapse.util.async import run_on_reactor
@@ -89,6 +90,9 @@ class IdentityHandler(BaseHandler):
                 ),
                 {'sid': creds['sid'], 'client_secret': client_secret}
             )
+        except MatrixCodeMessageException as e:
+            logger.info("getValidated3pid failed with Matrix error: %r", e)
+            raise SynapseError(e.code, e.msg, e.errcode)
         except CodeMessageException as e:
             data = json.loads(e.msg)
 
@@ -150,7 +154,7 @@ class IdentityHandler(BaseHandler):
         params.update(kwargs)
 
         try:
-            data = yield self.http_client.post_urlencoded_get_json(
+            data = yield self.http_client.post_json_get_json(
                 "https://%s%s" % (
                     id_server,
                     "/_matrix/identity/api/v1/validate/email/requestToken"
@@ -158,6 +162,46 @@ class IdentityHandler(BaseHandler):
                 params
             )
             defer.returnValue(data)
+        except MatrixCodeMessageException as e:
+            logger.info("Proxied requestToken failed with Matrix error: %r", e)
+            raise SynapseError(e.code, e.msg, e.errcode)
+        except CodeMessageException as e:
+            logger.info("Proxied requestToken failed: %r", e)
+            raise e
+
+    @defer.inlineCallbacks
+    def requestMsisdnToken(
+            self, id_server, country, phone_number,
+            client_secret, send_attempt, **kwargs
+    ):
+        yield run_on_reactor()
+
+        if not self._should_trust_id_server(id_server):
+            raise SynapseError(
+                400, "Untrusted ID server '%s'" % id_server,
+                Codes.SERVER_NOT_TRUSTED
+            )
+
+        params = {
+            'country': country,
+            'phone_number': phone_number,
+            'client_secret': client_secret,
+            'send_attempt': send_attempt,
+        }
+        params.update(kwargs)
+
+        try:
+            data = yield self.http_client.post_json_get_json(
+                "https://%s%s" % (
+                    id_server,
+                    "/_matrix/identity/api/v1/validate/msisdn/requestToken"
+                ),
+                params
+            )
+            defer.returnValue(data)
+        except MatrixCodeMessageException as e:
+            logger.info("Proxied requestToken failed with Matrix error: %r", e)
+            raise SynapseError(e.code, e.msg, e.errcode)
         except CodeMessageException as e:
             logger.info("Proxied requestToken failed: %r", e)
             raise e

@@ -40,6 +40,7 @@ from synapse.rest.client.v2_alpha import (
     register,
     auth,
     receipts,
+    read_marker,
     keys,
     tokenrefresh,
     tags,
@@ -50,6 +51,7 @@ from synapse.rest.client.v2_alpha import (
     devices,
     thirdparty,
     sendtodevice,
+    user_directory,
 )
 
 from synapse.http.server import JsonResource
@@ -88,6 +90,7 @@ class ClientRestResource(JsonResource):
         register.register_servlets(hs, client_resource)
         auth.register_servlets(hs, client_resource)
         receipts.register_servlets(hs, client_resource)
+        read_marker.register_servlets(hs, client_resource)
         keys.register_servlets(hs, client_resource)
         tokenrefresh.register_servlets(hs, client_resource)
         tags.register_servlets(hs, client_resource)
@@ -98,3 +101,4 @@ class ClientRestResource(JsonResource):
         devices.register_servlets(hs, client_resource)
         thirdparty.register_servlets(hs, client_resource)
         sendtodevice.register_servlets(hs, client_resource)
+        user_directory.register_servlets(hs, client_resource)

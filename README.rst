@@ -84,6 +84,7 @@ Synapse Installation
 Synapse is the reference python/twisted Matrix homeserver implementation.
 
 System requirements:
+
 - POSIX-compliant system (tested on Linux & OS X)
 - Python 2.7
 - At least 1GB of free RAM if you want to join large public rooms like #matrix:matrix.org
@@ -108,10 +109,10 @@ Installing prerequisites on ArchLinux::
     sudo pacman -S base-devel python2 python-pip \
                    python-setuptools python-virtualenv sqlite3
 
-Installing prerequisites on CentOS 7::
+Installing prerequisites on CentOS 7 or Fedora 25::
 
     sudo yum install libtiff-devel libjpeg-devel libzip-devel freetype-devel \
-                     lcms2-devel libwebp-devel tcl-devel tk-devel \
+                     lcms2-devel libwebp-devel tcl-devel tk-devel redhat-rpm-config \
                      python-virtualenv libffi-devel openssl-devel
     sudo yum groupinstall "Development Tools"
 
@@ -146,6 +147,7 @@ To install the synapse homeserver run::
 
     virtualenv -p python2.7 ~/.synapse
     source ~/.synapse/bin/activate
+    pip install --upgrade pip
     pip install --upgrade setuptools
     pip install https://github.com/matrix-org/synapse/tarball/master
 
@@ -228,6 +230,7 @@ To get started, it is easiest to use the command line to register new users::
     New user localpart: erikj
     Password:
     Confirm password:
+    Make admin [no]:
     Success!
 
 This process uses a setting ``registration_shared_secret`` in
@@ -242,6 +245,25 @@ Setting up a TURN server
 
 For reliable VoIP calls to be routed via this homeserver, you MUST configure
 a TURN server.  See `<docs/turn-howto.rst>`_ for details.
+
+IPv6
+----
+
+As of Synapse 0.19 we finally support IPv6, many thanks to @kyrias and @glyph
+for providing PR #1696.
+
+However, for federation to work on hosts with IPv6 DNS servers you **must**
+be running Twisted 17.1.0 or later - see https://github.com/matrix-org/synapse/issues/1002
+for details.  We can't make Synapse depend on Twisted 17.1 by default
+yet as it will break most older distributions (see https://github.com/matrix-org/synapse/pull/1909)
+so if you are using operating system dependencies you'll have to install your
+own Twisted 17.1 package via pip or backports etc.
+
+If you're running in a virtualenv then pip should have installed the newest
+Twisted automatically, but if your virtualenv is old you will need to manually
+upgrade to a newer Twisted dependency via:
+
+    pip install Twisted>=17.1.0
 
 
 Running Synapse
@@ -332,8 +354,9 @@ https://obs.infoserver.lv/project/monitor/matrix-synapse
 ArchLinux
 ---------
 
-The quickest way to get up and running with ArchLinux is probably with the community package
-https://www.archlinux.org/packages/community/any/matrix-synapse/, which should pull in all
+The quickest way to get up and running with ArchLinux is probably with Ivan
+Shapovalov's AUR package from
+https://aur.archlinux.org/packages/matrix-synapse/, which should pull in all
 the necessary dependencies.
 
 Alternatively, to install using pip a few changes may be needed as ArchLinux
@@ -371,7 +394,7 @@ FreeBSD
 
 Synapse can be installed via FreeBSD Ports or Packages contributed by Brendan Molloy from:
 
- - Ports: ``cd /usr/ports/net/py-matrix-synapse && make install clean``
+ - Ports: ``cd /usr/ports/net-im/py-matrix-synapse && make install clean``
  - Packages: ``pkg install py27-matrix-synapse``
 
 
@@ -502,6 +525,30 @@ fix try re-installing from PyPI or directly from
 
     # Install from github
     pip install --user https://github.com/pyca/pynacl/tarball/master
+
+Running out of File Handles
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If synapse runs out of filehandles, it typically fails badly - live-locking
+at 100% CPU, and/or failing to accept new TCP connections (blocking the
+connecting client).  Matrix currently can legitimately use a lot of file handles,
+thanks to busy rooms like #matrix:matrix.org containing hundreds of participating
+servers.  The first time a server talks in a room it will try to connect
+simultaneously to all participating servers, which could exhaust the available
+file descriptors between DNS queries & HTTPS sockets, especially if DNS is slow
+to respond.  (We need to improve the routing algorithm used to be better than
+full mesh, but as of June 2017 this hasn't happened yet).
+
+If you hit this failure mode, we recommend increasing the maximum number of
+open file handles to be at least 4096 (assuming a default of 1024 or 256).
+This is typically done by editing ``/etc/security/limits.conf``
+
+Separately, Synapse may leak file handles if inbound HTTP requests get stuck
+during processing - e.g. blocked behind a lock or talking to a remote server etc.
+This is best diagnosed by matching up the 'Received request' and 'Processed request'
+log lines and looking for any 'Processed request' lines which take more than
+a few seconds to execute.  Please let us know at #matrix-dev:matrix.org if
+you see this failure mode so we can help debug it, however.
 
 ArchLinux
 ~~~~~~~~~
@@ -808,7 +855,7 @@ directory of your choice::
 Synapse has a number of external dependencies, that are easiest
 to install using pip and a virtualenv::
 
-    virtualenv env
+    virtualenv -p python2.7 env
     source env/bin/activate
     python synapse/python_dependencies.py | xargs pip install
     pip install lxml mock
@@ -850,12 +897,9 @@ cache a lot of recent room data and metadata in RAM in order to speed up
 common requests.  We'll improve this in future, but for now the easiest
 way to either reduce the RAM usage (at the risk of slowing things down)
 is to set the almost-undocumented ``SYNAPSE_CACHE_FACTOR`` environment
-variable.  Roughly speaking, a SYNAPSE_CACHE_FACTOR of 1.0 will max out
-at around 3-4GB of resident memory - this is what we currently run the
-matrix.org on.  The default setting is currently 0.1, which is probably
-around a ~700MB footprint.  You can dial it down further to 0.02 if
-desired, which targets roughly ~512MB.  Conversely you can dial it up if
-you need performance for lots of users and have a box with a lot of RAM.
+variable.  The default is 0.5, which can be decreased to reduce RAM usage
+in memory constrained enviroments, or increased if performance starts to
+degrade.
 
 
 .. _`key_management`: https://matrix.org/docs/spec/server_server/unstable.html#retrieving-server-keys

@@ -70,6 +70,7 @@ class RoomMemberHandler(BaseHandler):
             content["kind"] = "guest"
 
         event, context = yield msg_handler.create_event(
+            requester,
             {
                 "type": EventTypes.Member,
                 "content": content,
@@ -139,13 +140,6 @@ class RoomMemberHandler(BaseHandler):
         )
         yield user_joined_room(self.distributor, user, room_id)
 
-    def reject_remote_invite(self, user_id, room_id, remote_room_hosts):
-        return self.hs.get_handlers().federation_handler.do_remotely_reject_invite(
-            remote_room_hosts,
-            room_id,
-            user_id
-        )
-
     @defer.inlineCallbacks
     def update_membership(
             self,
@@ -208,6 +202,11 @@ class RoomMemberHandler(BaseHandler):
 
         if not remote_room_hosts:
             remote_room_hosts = []
+
+        if effective_membership_state not in ("leave", "ban",):
+            is_blocked = yield self.store.is_room_blocked(room_id)
+            if is_blocked:
+                raise SynapseError(403, "This room has been blocked on this server")
 
         latest_event_ids = yield self.store.get_latest_event_ids_in_room(room_id)
         current_state_ids = yield self.state_handler.get_current_state_ids(
@@ -286,13 +285,21 @@ class RoomMemberHandler(BaseHandler):
                 else:
                     # send the rejection to the inviter's HS.
                     remote_room_hosts = remote_room_hosts + [inviter.domain]
-
+                    fed_handler = self.hs.get_handlers().federation_handler
                     try:
-                        ret = yield self.reject_remote_invite(
-                            target.to_string(), room_id, remote_room_hosts
+                        ret = yield fed_handler.do_remotely_reject_invite(
+                            remote_room_hosts,
+                            room_id,
+                            target.to_string(),
                         )
                         defer.returnValue(ret)
-                    except SynapseError as e:
+                    except Exception as e:
+                        # if we were unable to reject the exception, just mark
+                        # it as rejected on our end and plough ahead.
+                        #
+                        # The 'except' clause is very broad, but we need to
+                        # capture everything from DNS failures upwards
+                        #
                         logger.warn("Failed to reject invite: %s", e)
 
                         yield self.store.locally_reject_invite(
@@ -366,6 +373,11 @@ class RoomMemberHandler(BaseHandler):
                     # This should be an auth check, but guests are a local concept,
                     # so don't really fit into the general auth process.
                     raise AuthError(403, "Guest access not allowed")
+
+        if event.membership not in (Membership.LEAVE, Membership.BAN):
+            is_blocked = yield self.store.is_room_blocked(room_id)
+            if is_blocked:
+                raise SynapseError(403, "This room has been blocked on this server")
 
         yield message_handler.handle_new_client_event(
             requester,
@@ -737,10 +749,11 @@ class RoomMemberHandler(BaseHandler):
         if len(current_state_ids) == 1 and create_event_id:
             defer.returnValue(self.hs.is_mine_id(create_event_id))
 
-        for (etype, state_key), event_id in current_state_ids.items():
+        for etype, state_key in current_state_ids:
             if etype != EventTypes.Member or not self.hs.is_mine_id(state_key):
                 continue
 
+            event_id = current_state_ids[(etype, state_key)]
             event = yield self.store.get_event(event_id, allow_none=True)
             if not event:
                 continue

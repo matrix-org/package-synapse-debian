@@ -18,6 +18,7 @@ from twisted.internet import defer
 from synapse.http.servlet import (
     RestServlet, parse_string, parse_integer, parse_boolean
 )
+from synapse.handlers.presence import format_user_presence_state
 from synapse.handlers.sync import SyncConfig
 from synapse.types import StreamToken
 from synapse.events.utils import (
@@ -27,8 +28,8 @@ from synapse.api.filtering import FilterCollection, DEFAULT_FILTER_COLLECTION
 from synapse.api.errors import SynapseError
 from synapse.api.constants import PresenceState
 from ._base import client_v2_patterns
+from ._base import set_timeline_upper_limit
 
-import copy
 import itertools
 import logging
 
@@ -78,6 +79,7 @@ class SyncRestServlet(RestServlet):
 
     def __init__(self, hs):
         super(SyncRestServlet, self).__init__()
+        self.hs = hs
         self.auth = hs.get_auth()
         self.sync_handler = hs.get_sync_handler()
         self.clock = hs.get_clock()
@@ -121,6 +123,8 @@ class SyncRestServlet(RestServlet):
             if filter_id.startswith('{'):
                 try:
                     filter_object = json.loads(filter_id)
+                    set_timeline_upper_limit(filter_object,
+                                             self.hs.config.filter_timeline_limit)
                 except:
                     raise SynapseError(400, "Invalid filter JSON")
                 self.filtering.check_valid_filter(filter_object)
@@ -188,18 +192,25 @@ class SyncRestServlet(RestServlet):
                 "invite": invited,
                 "leave": archived,
             },
+            "device_one_time_keys_count": sync_result.device_one_time_keys_count,
             "next_batch": sync_result.next_batch.to_string(),
         }
 
         defer.returnValue((200, response_content))
 
     def encode_presence(self, events, time_now):
-        formatted = []
-        for event in events:
-            event = copy.deepcopy(event)
-            event['sender'] = event['content'].pop('user_id')
-            formatted.append(event)
-        return {"events": formatted}
+        return {
+            "events": [
+                {
+                    "type": "m.presence",
+                    "sender": event.user_id,
+                    "content": format_user_presence_state(
+                        event, time_now, include_user_id=False
+                    ),
+                }
+                for event in events
+            ]
+        }
 
     def encode_joined(self, rooms, time_now, token_id, event_fields):
         """
@@ -247,6 +258,7 @@ class SyncRestServlet(RestServlet):
             invite = serialize_event(
                 room.invite, time_now, token_id=token_id,
                 event_format=format_event_for_client_v2_without_room_id,
+                is_invite=True,
             )
             unsigned = dict(invite.get("unsigned", {}))
             invite["unsigned"] = unsigned
