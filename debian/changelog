@@ -1,3 +1,11 @@
+matrix-synapse (0.23.0-1) jessie; urgency=medium
+
+  * Fix patch after refactor
+  * Add patch to remove requirement on affinity package
+  * refresh webclient patch
+
+ -- Erik Johnston <erikj@matrix.org>  Mon, 02 Oct 2017 15:34:57 +0100
+
 matrix-synapse (0.22.1-1) jessie; urgency=medium
 
   * Imported Upstream version 0.22.1
