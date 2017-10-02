@@ -10,15 +10,16 @@ Index: package-synapse-debian/synapse/app/homeserver.py
 ===================================================================
 --- package-synapse-debian.orig/synapse/app/homeserver.py
 +++ package-synapse-debian/synapse/app/homeserver.py
-@@ -25,7 +25,7 @@ import synapse.config.logger
- from synapse.config._base import ConfigError
- 
- from synapse.python_dependencies import (
--    check_requirements, CONDITIONAL_REQUIREMENTS
-+    check_requirements
- )
- 
+@@ -33,8 +33,7 @@ from synapse.http.server import RootRedi
+ from synapse.http.site import SynapseSite
+ from synapse.metrics import register_memory_metrics
+ from synapse.metrics.resource import METRICS_PREFIX, MetricsResource
+-from synapse.python_dependencies import CONDITIONAL_REQUIREMENTS, \
+-    check_requirements
++from synapse.python_dependencies import check_requirements
+ from synapse.replication.tcp.resource import ReplicationStreamProtocolFactory
  from synapse.rest import ClientRestResource
+ from synapse.rest.key.v1.server_key_resource import LocalKey
 @@ -87,12 +87,11 @@ def build_resource_for_web_client(hs):
                  "Please either install the matrix-angular-sdk or configure\n"
                  "the location of the source to serve via the configuration\n"
