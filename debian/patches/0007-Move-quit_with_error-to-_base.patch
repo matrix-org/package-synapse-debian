@@ -1,0 +1,56 @@
+From: Erik Johnston <erikj@matrix.org>
+Date: Mon, 2 Oct 2017 14:56:22 +0100
+Subject: Move quit_with_error to _base
+
+---
+ synapse/app/_base.py      | 10 ++++++++++
+ synapse/app/homeserver.py | 11 +----------
+ 2 files changed, 11 insertions(+), 10 deletions(-)
+
+diff --git a/synapse/app/_base.py b/synapse/app/_base.py
+index cd0e815..e1ff8f9 100644
+--- a/synapse/app/_base.py
++++ b/synapse/app/_base.py
+@@ -97,3 +97,13 @@ def start_reactor(
+         daemon.start()
+     else:
+         run()
++
++
++def quit_with_error(error_string):
++    message_lines = error_string.split("\n")
++    line_length = max([len(l) for l in message_lines if len(l) < 80]) + 2
++    sys.stderr.write("*" * line_length + '\n')
++    for line in message_lines:
++        sys.stderr.write(" %s\n" % (line.rstrip(),))
++    sys.stderr.write("*" * line_length + '\n')
++    sys.exit(1)
+diff --git a/synapse/app/homeserver.py b/synapse/app/homeserver.py
+index 7a5e694..492b05f 100755
+--- a/synapse/app/homeserver.py
++++ b/synapse/app/homeserver.py
+@@ -25,6 +25,7 @@ from synapse.api.urls import CONTENT_REPO_PREFIX, FEDERATION_PREFIX, \
+     LEGACY_MEDIA_PREFIX, MEDIA_PREFIX, SERVER_KEY_PREFIX, SERVER_KEY_V2_PREFIX, \
+     STATIC_PREFIX, WEB_CLIENT_PREFIX
+ from synapse.app import _base
++from synapse.app._base import quit_with_error
+ from synapse.config._base import ConfigError
+ from synapse.config.homeserver import HomeServerConfig
+ from synapse.crypto import context_factory
+@@ -247,16 +248,6 @@ class SynapseHomeServer(HomeServer):
+         return db_conn
+ 
+ 
+-def quit_with_error(error_string):
+-    message_lines = error_string.split("\n")
+-    line_length = max([len(l) for l in message_lines if len(l) < 80]) + 2
+-    sys.stderr.write("*" * line_length + '\n')
+-    for line in message_lines:
+-        sys.stderr.write(" %s\n" % (line.rstrip(),))
+-    sys.stderr.write("*" * line_length + '\n')
+-    sys.exit(1)
+-
+-
+ def setup(config_options):
+     """
+     Args:
