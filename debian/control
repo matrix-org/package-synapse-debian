@@ -44,6 +44,7 @@ Depends:
  debconf,
  lsb-base (>= 3.0-6),
  python-twisted (>= 16.0.0),
+ python-bcrypt,
 Suggests:
  python-bleach (>= 1.4.2),
  python-jinja2 (>= 2.8),
