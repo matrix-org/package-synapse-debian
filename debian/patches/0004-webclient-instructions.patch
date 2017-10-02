@@ -6,11 +6,11 @@ Subject: webclient-instructions
  synapse/app/homeserver.py | 8 +++-----
  1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/synapse/app/homeserver.py b/synapse/app/homeserver.py
-index 84ad8f0..39c469f 100755
---- a/synapse/app/homeserver.py
-+++ b/synapse/app/homeserver.py
-@@ -33,8 +33,7 @@ from synapse.http.server import RootRedirect
+Index: package-synapse-debian/synapse/app/homeserver.py
+===================================================================
+--- package-synapse-debian.orig/synapse/app/homeserver.py
++++ package-synapse-debian/synapse/app/homeserver.py
+@@ -33,8 +33,7 @@ from synapse.http.server import RootRedi
  from synapse.http.site import SynapseSite
  from synapse.metrics import register_memory_metrics
  from synapse.metrics.resource import METRICS_PREFIX, MetricsResource
