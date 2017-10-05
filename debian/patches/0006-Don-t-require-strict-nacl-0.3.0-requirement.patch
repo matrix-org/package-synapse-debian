@@ -7,7 +7,7 @@ Subject: Don't require strict nacl==0.3.0 requirement
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/synapse/python_dependencies.py b/synapse/python_dependencies.py
-index b905ad9..4cc1ba2 100644
+index 93381e0..004ddcf 100644
 --- a/synapse/python_dependencies.py
 +++ b/synapse/python_dependencies.py
 @@ -24,7 +24,7 @@ REQUIREMENTS = {

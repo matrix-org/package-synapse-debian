@@ -4,5 +4,3 @@
 0004-webclient-instructions.patch
 0005-Honour-config.web_client.patch
 0006-Don-t-require-strict-nacl-0.3.0-requirement.patch
-0007-Move-quit_with_error-to-_base.patch
-0008-Remove-affinity-package-requirement.patch

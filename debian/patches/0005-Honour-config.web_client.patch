@@ -7,10 +7,10 @@ Subject: Honour config.web_client
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/synapse/app/homeserver.py b/synapse/app/homeserver.py
-index 39c469f..7a5e694 100755
+index 5a0329b..492b05f 100755
 --- a/synapse/app/homeserver.py
 +++ b/synapse/app/homeserver.py
-@@ -145,7 +145,7 @@ class SynapseHomeServer(HomeServer):
+@@ -146,7 +146,7 @@ class SynapseHomeServer(HomeServer):
                          SERVER_KEY_V2_PREFIX: KeyApiV2Resource(self),
                      })
  
