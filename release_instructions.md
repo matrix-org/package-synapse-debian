@@ -1,7 +1,7 @@
 You will need to have the following (non-exhaustive) packages:
 
     - ubuntu-dev-tools
-    - git-buildbackage
+    - git-buildpackage
     - dh-systemd
     - sbuild
 
