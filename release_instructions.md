@@ -8,11 +8,11 @@ You will need to have the following (non-exhaustive) packages:
 You should create a bunch of schroots (see mk-sbuild) and add the matrix
 debian repository to all the schroots.
 
-    mk-sbuild --eatmydata wheezy
+    mk-sbuild --eatmydata jessie
     # Logout/Login to get a new session
-    sudo schroot -c source:wheezy-amd64 -u root # Enter the schroot
-    echo deb http://matrix.org/packages/debian/ wheezy main > /etc/apt/sources.list.d/matrix.list
-    echo deb http://ftp.debian.org/debian wheezy-backports main non-free contrib > /etc/apt/sources.list.d/backports.list
+    sudo schroot -c source:jessie-amd64 -u root # Enter the schroot
+    apt-get update
+    echo deb http://matrix.org/packages/debian/ jessie main > /etc/apt/sources.list.d/matrix.list
     apt-key add - <<EOF # Copy key from https://matrix.org/packages/debian/repo-key.asc
     EOF
     apt-get update
@@ -34,7 +34,7 @@ To make a new release:
     git checkout debian
     gbp import-orig --uscan  # Scans and downloads the new source.
     gbp dch --snapshot --auto debian
-    gbp buildpackage --git-ignore-new -A -s -d jessie -c <schroot name>
+    gbp buildpackage --git-ignore-new -A -s -d jessie
 
 If the build succeeds then it will have placed a .deb file in the directory
 above. It is a good idea to check that is installable by copying it to the
