@@ -1,3 +1,99 @@
+Changes in synapse v0.24.0 (2017-10-23)
+=======================================
+
+No changes since v0.24.0-rc1
+
+
+Changes in synapse v0.24.0-rc1 (2017-10-19)
+===========================================
+
+Features:
+
+* Add Group Server (PR #2352, #2363, #2374, #2377, #2378, #2382, #2410, #2426,
+  #2430, #2454, #2471, #2472, #2544)
+* Add support for channel notifications (PR #2501)
+* Add basic implementation of backup media store (PR #2538)
+* Add config option to auto-join new users to rooms (PR #2545)
+
+
+Changes:
+
+* Make the spam checker a module (PR #2474)
+* Delete expired url cache data (PR #2478)
+* Ignore incoming events for rooms that we have left (PR #2490)
+* Allow spam checker to reject invites too (PR #2492)
+* Add room creation checks to spam checker (PR #2495)
+* Spam checking: add the invitee to user_may_invite (PR #2502)
+* Process events from federation for different rooms in parallel (PR #2520)
+* Allow error strings from spam checker (PR #2531)
+* Improve error handling for missing files in config (PR #2551)
+
+
+Bug fixes:
+
+* Fix handling SERVFAILs when doing AAAA lookups for federation (PR #2477)
+* Fix incompatibility with newer versions of ujson (PR #2483) Thanks to
+  @jeremycline!
+* Fix notification keywords that start/end with non-word chars (PR #2500)
+* Fix stack overflow and logcontexts from linearizer (PR #2532)
+* Fix 500 error when fields missing from power_levels event (PR #2552)
+* Fix 500 error when we get an error handling a PDU (PR #2553)
+
+
+Changes in synapse v0.23.1 (2017-10-02)
+=======================================
+
+Changes:
+
+* Make 'affinity' package optional, as it is not supported on some platforms
+
+
+Changes in synapse v0.23.0 (2017-10-02)
+=======================================
+
+No changes since v0.23.0-rc2
+
+
+Changes in synapse v0.23.0-rc2 (2017-09-26)
+===========================================
+
+Bug fixes:
+
+* Fix regression in performance of syncs (PR #2470)
+
+
+Changes in synapse v0.23.0-rc1 (2017-09-25)
+===========================================
+
+Features:
+
+* Add a frontend proxy worker (PR #2344)
+* Add support for event_id_only push format (PR #2450)
+* Add a PoC for filtering spammy events (PR #2456)
+* Add a config option to block all room invites (PR #2457)
+
+
+Changes:
+
+* Use bcrypt module instead of py-bcrypt (PR #2288) Thanks to @kyrias!
+* Improve performance of generating push notifications (PR #2343, #2357, #2365,
+  #2366, #2371)
+* Improve DB performance for device list handling in sync (PR #2362)
+* Include a sample prometheus config (PR #2416)
+* Document known to work postgres version (PR #2433) Thanks to @ptman!
+
+
+Bug fixes:
+
+* Fix caching error in the push evaluator (PR #2332)
+* Fix bug where pusherpool didn't start and broke some rooms (PR #2342)
+* Fix port script for user directory tables (PR #2375)
+* Fix device lists notifications when user rejoins a room (PR #2443, #2449)
+* Fix sync to always send down current state events in timeline (PR #2451)
+* Fix bug where guest users were incorrectly kicked (PR #2453)
+* Fix bug talking to IPv6 only servers using SRV records (PR #2462)
+
+
 Changes in synapse v0.22.1 (2017-07-06)
 =======================================
 
