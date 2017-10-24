@@ -1,10 +1,12 @@
-matrix-synapse (0.19.3+dfsg-1) unstable; urgency=medium
+matrix-synapse (0.24.0+dfsg-1) UNRELEASED; urgency=medium
 
   * New upstream version.
   * Remove an extra oversionmangle from debian/watch.
   * Drop a patch applied upstream.
+  * Update debian/copyright.
+  * Add a patch to temporarily avoid phonenumbers dependency.
 
- -- Andrew Shadura <andrewsh@debian.org>  Mon, 27 Mar 2017 12:07:15 +0200
+ -- Andrew Shadura <andrewsh@debian.org>  Tue, 24 Oct 2017 14:50:13 +0100
 
 matrix-synapse (0.19.2+dfsg-6) unstable; urgency=medium
 
