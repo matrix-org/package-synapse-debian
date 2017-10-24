@@ -3,7 +3,10 @@ Source: https://matrix.org/docs/projects/server/synapse.html
 Files-Excluded: synapse/static/client/register/js/recaptcha_ajax.js
 
 Files: *
-Copyright: 2014-2017 OpenMarket Ltd
+Copyright:
+  2014-2017 OpenMarket Ltd
+  2017 Vector Creations Ltd
+  2017 New Vector Ltd
 License: Apache-2.0
 
 Files: synapse/config/jwt.py
@@ -18,6 +21,7 @@ Files: synapse/config/*
 Copyright:
  2014-2017 OpenMarket Ltd
  2014-2017 matrix.org
+ 2017 New Vector Ltd
 License: Apache-2.0
 
 License: Apache-2.0
