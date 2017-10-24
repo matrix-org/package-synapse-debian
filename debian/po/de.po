@@ -1,0 +1,63 @@
+# Translation of matrix-synapse debconf templates to German
+# Copyright (C) Helge Kreutzmann <debian@helgefjell.de>, 2017.
+# This file is distributed under the same license as the redmine package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: matrix-synapse 0.19.2+dfsg-3\n"
+"Report-Msgid-Bugs-To: matrix-synapse@packages.debian.org\n"
+"POT-Creation-Date: 2017-02-21 07:51+0000\n"
+"PO-Revision-Date: 2017-03-12 06:50+0100\n"
+"Last-Translator: Helge Kreutzmann <debian@helgefjell.de>\n"
+"Language-Team: de <debian-l10n-german@lists.debian.org>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: string
+#. Description
+#: ../templates:1001
+msgid "Name of the server:"
+msgstr "Name des Servers:"
+
+#. Type: string
+#. Description
+#: ../templates:1001
+msgid ""
+"The name that this homeserver will appear as, to clients and other servers "
+"via federation. This name should match the SRV record published in DNS."
+msgstr ""
+"Der Name, unter dem dieser Heimatserver den Clients und anderen Diensten "
+"mittels Föderation erscheinen wird. Der Name sollte auf den SRV-Datensatz, "
+"wie er im DNS veröffentlicht ist, passen."
+
+#. Type: boolean
+#. Description
+#: ../templates:2001
+msgid "Report anonymous statistics?"
+msgstr "Anonyme Statistiken berichten?"
+
+#. Type: boolean
+#. Description
+#: ../templates:2001
+msgid ""
+"Developers of Matrix and Synapse really appreciate helping the project out "
+"by reporting anonymized usage statistics from this homeserver. Only very "
+"basic aggregate data (e.g. number of users) will be reported, but it helps "
+"track the growth of the Matrix community, and helps in making Matrix a "
+"success, as well as to convince other networks that they should peer with "
+"Matrix."
+msgstr ""
+"Die Entwickler von Matrix und Synape schätzen es sehr, wenn Sie dem Projekt "
+"mit anonymisierten Benutzungsstatistiken von diesem Heimatserver helfen. Nur "
+"sehr grundlegende, zusammengefasste Daten (z.B. die Anzahl der Benutzer) "
+"werden berichtet, aber es hilft, das Wachstum der Matrix-Gemeinde "
+"nachzuvollziehen und Matrix zum Erfolg zu führen, sowie andere Netze zu "
+"überzeugen, dass sie eine Peer-Verbindung zu Matrix aufbauen sollen."
+
+#. Type: boolean
+#. Description
+#: ../templates:2001
+msgid "Thank you."
+msgstr "Vielen Dank."

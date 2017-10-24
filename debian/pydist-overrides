@@ -3,3 +3,4 @@ jinja2
 bleach
 ldap3
 matrix-synapse-ldap3
+py_bcrypt python-bcrypt

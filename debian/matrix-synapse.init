@@ -20,6 +20,7 @@ PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC="matrix-synapse"
 NAME=matrix-synapse
 SCRIPTNAME=/etc/init.d/$NAME
+CONFIGFILE_SERVERNAME="/etc/matrix-synapse/conf.d/server_name.yaml"
 
 PYTHON="/usr/bin/python"
 CONFIGS="--config-path /etc/matrix-synapse/homeserver.yaml --config-path /etc/matrix-synapse/conf.d/"
@@ -50,6 +51,9 @@ get_config_key()
 #
 do_start()
 {
+	# Fail silently if CONFIGFILE_SERVERNAME doesn't exist
+	[ -f $CONFIGFILE_SERVERNAME ] || return 0
+
 	# Running --generate-config to create keys if any are absent.
 	# Doesn't matter if not
 	$PYTHON -m "synapse.app.homeserver" $CONFIGS --generate-keys || return 2

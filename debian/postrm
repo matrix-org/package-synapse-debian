@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -e
+
+CONFIG_DIR="/etc/matrix-synapse/conf.d"
+CONFIGFILE_SERVERNAME="$CONFIG_DIR/server_name.yaml"
+CONFIGFILE_REPORTSTATS="$CONFIG_DIR/report_stats.yaml"
+
+if [ "$1" = "purge" ]
+then
+	rm -f $CONFIGFILE_SERVERNAME $CONFIGFILE_REPORTSTATS
+        if [ -d $CONFIG_DIR ]
+	then
+		rmdir --ignore-fail-on-non-empty $CONFIG_DIR
+	fi
+fi
+
+#DEBHELPER#
+
+exit 0
