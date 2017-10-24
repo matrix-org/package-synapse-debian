@@ -1,0 +1,38 @@
+From: Andrew Shadura <andrewsh@debian.org>
+Subject: Try to not require phonenumbers yet.
+Date: Tue, 24 Oct 2017 15:05:33 +0100
+
+--- a/synapse/python_dependencies.py
++++ b/synapse/python_dependencies.py
+@@ -39,7 +39,6 @@
+     "pysaml2>=3.0.0,<4.0.0": ["saml2"],
+     "pymacaroons-pynacl": ["pymacaroons"],
+     "msgpack-python>=0.3.0": ["msgpack"],
+-    "phonenumbers>=8.2.0": ["phonenumbers"],
+ }
+ CONDITIONAL_REQUIREMENTS = {
+     "web_client": {
+--- a/synapse/util/msisdn.py
++++ b/synapse/util/msisdn.py
+@@ -13,7 +13,8 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ 
+-import phonenumbers
++# import phonenumbers
++import re
+ from synapse.api.errors import SynapseError
+ 
+ 
+@@ -31,10 +32,4 @@
+     Raises:
+             SynapseError if the number could not be parsed.
+     """
+-    try:
+-        phoneNumber = phonenumbers.parse(number, country)
+-    except phonenumbers.NumberParseException:
+-        raise SynapseError(400, "Unable to parse phone number")
+-    return phonenumbers.format_number(
+-        phoneNumber, phonenumbers.PhoneNumberFormat.E164
+-    )[1:]
++    return re.sub('^00', '', re.sub(' ', '', number))
