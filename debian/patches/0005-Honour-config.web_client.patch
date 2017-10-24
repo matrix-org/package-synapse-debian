@@ -10,7 +10,7 @@ Index: package-synapse-debian/synapse/app/homeserver.py
 ===================================================================
 --- package-synapse-debian.orig/synapse/app/homeserver.py
 +++ package-synapse-debian/synapse/app/homeserver.py
-@@ -157,7 +157,7 @@ class SynapseHomeServer(HomeServer):
+@@ -159,7 +159,7 @@ class SynapseHomeServer(HomeServer):
                          SERVER_KEY_V2_PREFIX: KeyApiV2Resource(self),
                      })
  

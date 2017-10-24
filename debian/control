@@ -14,6 +14,7 @@ Build-Depends:
  python-canonicaljson (>=1.0.0),
  python-daemonize,
  python-frozendict (>= 0.4),
+ python-jsonschema (>= 2.5.1),
  python-mock,
  python-msgpack (>=0.3.0),
  python-nacl (>= 0.3.0),
@@ -29,7 +30,7 @@ Build-Depends:
  python-twisted (>= 16.0.0),
  python-ujson,
  python-unpaddedbase64 (>= 1.0.1),
- python-yaml
+ python-yaml,
 Standards-Version: 3.9.8
 X-Python-Version: >= 2.7
 Homepage: https://matrix.org/docs/projects/server/synapse.html
