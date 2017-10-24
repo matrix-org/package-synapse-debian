@@ -6,10 +6,10 @@ Subject: saml2
  synapse/python_dependencies.py | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Index: package-synapse-debian/synapse/python_dependencies.py
-===================================================================
---- package-synapse-debian.orig/synapse/python_dependencies.py
-+++ package-synapse-debian/synapse/python_dependencies.py
+diff --git a/synapse/python_dependencies.py b/synapse/python_dependencies.py
+index 7052333..93381e0 100644
+--- a/synapse/python_dependencies.py
++++ b/synapse/python_dependencies.py
 @@ -36,7 +36,7 @@ REQUIREMENTS = {
      "pydenticon": ["pydenticon"],
      "ujson": ["ujson"],

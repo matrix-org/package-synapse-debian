@@ -6,10 +6,10 @@ Subject: change_instructions
  synapse/config/_base.py | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-Index: package-synapse-debian/synapse/config/_base.py
-===================================================================
---- package-synapse-debian.orig/synapse/config/_base.py
-+++ package-synapse-debian/synapse/config/_base.py
+diff --git a/synapse/config/_base.py b/synapse/config/_base.py
+index 1ab5593..14052a9 100644
+--- a/synapse/config/_base.py
++++ b/synapse/config/_base.py
 @@ -29,6 +29,11 @@ class ConfigError(Exception):
  MISSING_REPORT_STATS_CONFIG_INSTRUCTIONS = """\
  Please opt in or out of reporting anonymized homeserver usage statistics, by

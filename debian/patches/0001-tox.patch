@@ -7,7 +7,7 @@ Subject: tox
  1 file changed, 1 insertion(+)
 
 diff --git a/tox.ini b/tox.ini
-index 757b718..fe951fe 100644
+index f408def..4a40b2a 100644
 --- a/tox.ini
 +++ b/tox.ini
 @@ -1,5 +1,6 @@
