@@ -2,5 +2,5 @@
 0002-change_instructions.patch
 0003-saml2.patch
 0004-webclient-instructions.patch
-0005-Honour-config.web_client.patch
 0006-Don-t-require-strict-nacl-0.3.0-requirement.patch
+remove-webclient.patch
