@@ -1,3 +1,12 @@
+matrix-synapse (0.26.0-1) jessie; urgency=medium
+
+  [ Richard van der Hoff ]
+  * Remove `level` for `file` log handler
+
+  [ Erik Johnston ]
+
+ -- Erik Johnston <erik@matrix.org>  Fri, 05 Jan 2018 11:21:26 +0000
+
 matrix-synapse (0.25.1-1) jessie; urgency=medium
 
   * New upstream version 0.25.1
