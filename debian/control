@@ -1,6 +1,6 @@
 Source: matrix-synapse
 Maintainer: Erik Johnston <erikj@matrix.org>
-Section: python
+Section: net
 Priority: optional
 Build-Depends:
  debhelper (>= 9),
@@ -13,6 +13,7 @@ Build-Depends:
  python-canonicaljson (>=1.0.0),
  python-daemonize,
  python-frozendict (>= 0.4),
+ python-jsonschema (>= 2.5.1),
  python-mock,
  python-msgpack (>=0.3.0),
  python-nacl (>= 0.3.0),
@@ -20,47 +21,46 @@ Build-Depends:
  python-pil,
  python-pyasn1,
  python-pydenticon,
- python-pymacaroons-pynacl,
+ python-pymacaroons-pynacl | python-pymacaroons,
  python-pysaml2,
  python-service-identity (>= 1.0.0),
  python-setuptools (>= 0.6b3),
  python-signedjson (>= 1.0.0),
- python-syutil (>= 0.0.7),
  python-twisted (>= 16.0.0),
- python-unpaddedbase64 (>= 1.0.1),
  python-ujson,
+ python-unpaddedbase64 (>= 1.0.1),
  python-yaml,
- python-phonenumbers (>= 8.2.0),
- python-jsonschema (>=2.5.1),
 Standards-Version: 3.9.8
 X-Python-Version: >= 2.7
+Homepage: https://matrix.org/docs/projects/server/synapse.html
 
 Package: matrix-synapse
 Architecture: all
 Depends:
- ${misc:Depends},
- ${python:Depends},
  adduser,
  debconf,
  lsb-base (>= 3.0-6),
  python-twisted (>= 16.0.0),
- python-bcrypt,
+ python-nacl (<< 1.1.0) | python-pymacaroons,
+ python-nacl (>= 1.1.0) | python-pymacaroons-pynacl,
+ ${misc:Depends},
+ ${python:Depends}
 Suggests:
  python-bleach (>= 1.4.2),
- python-jinja2 (>= 2.8),
-Description: Open federated Instant Messaging and VoIP server
- Matrix is an ambitious new ecosystem for open federated Instant
- Messaging and VoIP. Synapse is a reference Matrix server
- implementation.
+ python-jinja2 (>= 2.8)
+Description: Matrix reference homeserver
+ Synapse is the reference Python/Twisted Matrix homeserver implementation.
  .
- Everything in Matrix happens in a room.  Rooms are distributed and do
- not exist on any single server.  Rooms can be located using
- convenience aliases like #matrix:matrix.org or #test:localhost:8448.
+ Synapse is intended to showcase the concept of Matrix, and to let users run
+ their own homeserver and generally help bootstrap the ecosystem.
  .
- Matrix user IDs look like @matthew:matrix.org (although in the future
- you will normally refer to yourself and others using a 3PID: email
- address, phone number, etc rather than manipulating Matrix user IDs)
+ Matrix is an open standard for interoperable, decentralised, real-time
+ communication over IP. It can be used to power Instant Messaging, VoIP/WebRTC
+ signalling, Internet of Things communication or anywhere where's a need for
+ a standard HTTP API for publishing and subscribing to data whilst tracking the
+ conversation history.
  .
- The overall architecture is:
- client <------> homeserver <=============> homeserver <------> client
-                 https://a.org/_matrix      https://b.net/_matrix
+ In Matrix, every user runs one or more Matrix clients, which connect through
+ to a Matrix homeserver. The homeserver stores all their personal chat history
+ and user account information, much as a mail client connects through to an
+ IMAP/SMTP server.
