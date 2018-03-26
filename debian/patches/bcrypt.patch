@@ -23,4 +23,4 @@
 +    "bcrypt": ["bcrypt"],
      "pillow": ["PIL"],
      "pydenticon": ["pydenticon"],
-     "blist": ["blist"],
+     "ujson": ["ujson"],
