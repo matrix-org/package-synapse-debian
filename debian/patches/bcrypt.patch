@@ -1,0 +1,26 @@
+--- a/synapse/handlers/auth.py
++++ b/synapse/handlers/auth.py
+@@ -863,10 +863,8 @@
+         """
+ 
+         def _do_validate_hash():
+-            return bcrypt.checkpw(
+-                password.encode('utf8') + self.hs.config.password_pepper,
+-                stored_hash.encode('utf8')
+-            )
++            return bcrypt.hashpw(password.encode('utf8') + self.hs.config.password_pepper,
++                                 stored_hash.encode('utf8')) == stored_hash
+ 
+         if stored_hash:
+             return make_deferred_yieldable(threads.deferToThread(_do_validate_hash))
+--- a/synapse/python_dependencies.py
++++ b/synapse/python_dependencies.py
+@@ -31,7 +31,7 @@
+     "pyyaml": ["yaml"],
+     "pyasn1": ["pyasn1"],
+     "daemonize": ["daemonize"],
+-    "bcrypt": ["bcrypt>=3.1.0"],
++    "bcrypt": ["bcrypt"],
+     "pillow": ["PIL"],
+     "pydenticon": ["pydenticon"],
+     "blist": ["blist"],
