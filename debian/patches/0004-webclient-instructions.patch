@@ -6,21 +6,21 @@ Subject: webclient-instructions
  synapse/app/homeserver.py | 8 +++-----
  1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/synapse/app/homeserver.py b/synapse/app/homeserver.py
-index 3adf72e..5a0329b 100755
---- a/synapse/app/homeserver.py
-+++ b/synapse/app/homeserver.py
-@@ -34,8 +34,7 @@ from synapse.http.server import RootRedirect
+Index: package-synapse-debian/synapse/app/homeserver.py
+===================================================================
+--- package-synapse-debian.orig/synapse/app/homeserver.py
++++ package-synapse-debian/synapse/app/homeserver.py
+@@ -36,8 +36,7 @@ from synapse.http.server import RootRedi
  from synapse.http.site import SynapseSite
  from synapse.metrics import register_memory_metrics
  from synapse.metrics.resource import METRICS_PREFIX, MetricsResource
 -from synapse.python_dependencies import CONDITIONAL_REQUIREMENTS, \
 -    check_requirements
 +from synapse.python_dependencies import check_requirements
+ from synapse.replication.http import ReplicationRestResource, REPLICATION_PREFIX
  from synapse.replication.tcp.resource import ReplicationStreamProtocolFactory
  from synapse.rest import ClientRestResource
- from synapse.rest.key.v1.server_key_resource import LocalKey
-@@ -75,12 +74,11 @@ def build_resource_for_web_client(hs):
+@@ -78,12 +77,11 @@ def build_resource_for_web_client(hs):
                  "Please either install the matrix-angular-sdk or configure\n"
                  "the location of the source to serve via the configuration\n"
                  "option `web_client_location`\n\n"
