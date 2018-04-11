@@ -8,9 +8,9 @@ Subject: saml2
 
 --- a/synapse/python_dependencies.py
 +++ b/synapse/python_dependencies.py
-@@ -36,7 +36,7 @@
+@@ -35,7 +35,7 @@
+     "pillow": ["PIL"],
      "pydenticon": ["pydenticon"],
-     "ujson": ["ujson"],
      "blist": ["blist"],
 -    "pysaml2>=3.0.0": ["saml2>=3.0.0"],
 +    "pysaml2>=3.0.0": ["saml2"],
