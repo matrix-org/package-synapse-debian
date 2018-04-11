@@ -1,3 +1,11 @@
+matrix-synapse (0.27.3-1) jessie; urgency=medium
+
+  * Report stats should default to off
+  * Refresh patches
+  * New upstream 0.27.3
+
+ -- Erik Johnston <erik@matrix.org>  Wed, 11 Apr 2018 11:43:47 +0100
+
 matrix-synapse (0.27.2-1) jessie; urgency=medium
 
   * New upstream version 0.27.2
