@@ -7,7 +7,7 @@ _Description: Name of the server:
 
 Template: matrix-synapse/report-stats
 Type: boolean
-Default: true
+Default: false
 _Description: Report anonymous statistics?
  Developers of Matrix and Synapse really appreciate helping the
  project out by reporting anonymized usage statistics from this
