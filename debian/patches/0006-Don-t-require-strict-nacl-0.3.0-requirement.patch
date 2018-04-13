@@ -6,13 +6,11 @@ Subject: Don't require strict nacl==0.3.0 requirement
  synapse/python_dependencies.py | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Index: package-synapse-debian/synapse/python_dependencies.py
-===================================================================
---- package-synapse-debian.orig/synapse/python_dependencies.py
-+++ package-synapse-debian/synapse/python_dependencies.py
-@@ -24,7 +24,7 @@ REQUIREMENTS = {
+--- a/synapse/python_dependencies.py
++++ b/synapse/python_dependencies.py
+@@ -24,7 +24,7 @@
      "unpaddedbase64>=1.1.0": ["unpaddedbase64>=1.1.0"],
-     "canonicaljson>=1.0.0": ["canonicaljson>=1.0.0"],
+     "canonicaljson>=1.1.3": ["canonicaljson>=1.1.3"],
      "signedjson>=1.0.0": ["signedjson>=1.0.0"],
 -    "pynacl>=1.2.1": ["nacl>=1.2.1", "nacl.bindings"],
 +    "pynacl>=0.3.0": ["nacl>=0.3.0", "nacl.bindings"],
