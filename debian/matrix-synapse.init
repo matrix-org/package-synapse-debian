@@ -72,7 +72,8 @@ do_start()
 	# Create the PID file so that synapse can write to it as nonroot
 	touch $PIDFILE
 	chown $USER:nogroup $PIDFILE
-    chown $USER:nogroup $SHAREDIR/media/
+	chown $USER:nogroup $SHAREDIR/media/
+	chown $USER:nogroup $SHAREDIR/uploads/
 
 	start-stop-daemon --start --pidfile $PIDFILE --chuid $USER \
 	  --exec $PYTHON -- -m "synapse.app.homeserver" $CONFIGS --daemonize || return 2
