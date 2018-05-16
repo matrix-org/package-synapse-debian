@@ -12,7 +12,7 @@ index f408def..4a40b2a 100644
 +++ b/tox.ini
 @@ -1,5 +1,6 @@
  [tox]
- envlist = packaging, py27, pep8
+ envlist = packaging, py27, py36, pep8
 +sitepackages = True
  
  [testenv]

@@ -15,5 +15,5 @@ Subject: Don't require strict nacl==0.3.0 requirement
 -    "pynacl>=1.2.1": ["nacl>=1.2.1", "nacl.bindings"],
 +    "pynacl>=0.3.0": ["nacl>=0.3.0", "nacl.bindings"],
      "service_identity>=1.0.0": ["service_identity>=1.0.0"],
+     "Twisted>=16.0.0": ["twisted>=16.0.0"],
  
-     # we break under Twisted 18.4

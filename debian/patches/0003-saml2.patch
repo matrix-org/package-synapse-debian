@@ -8,7 +8,7 @@ Subject: saml2
 
 --- a/synapse/python_dependencies.py
 +++ b/synapse/python_dependencies.py
-@@ -35,7 +35,7 @@
+@@ -51,7 +51,7 @@
      "pillow": ["PIL"],
      "pydenticon": ["pydenticon"],
      "blist": ["blist"],

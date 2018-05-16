@@ -6,11 +6,9 @@ Subject: change_instructions
  synapse/config/_base.py | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-diff --git a/synapse/config/_base.py b/synapse/config/_base.py
-index 1ab5593..14052a9 100644
 --- a/synapse/config/_base.py
 +++ b/synapse/config/_base.py
-@@ -29,6 +29,11 @@ class ConfigError(Exception):
+@@ -31,6 +31,11 @@
  MISSING_REPORT_STATS_CONFIG_INSTRUCTIONS = """\
  Please opt in or out of reporting anonymized homeserver usage statistics, by
  setting the `report_stats` key in your config file to either True or False.
@@ -22,7 +20,7 @@ index 1ab5593..14052a9 100644
  """
  
  MISSING_REPORT_STATS_SPIEL = """\
-@@ -43,6 +48,11 @@ Thank you.
+@@ -45,6 +50,11 @@
  
  MISSING_SERVER_NAME = """\
  Missing mandatory `server_name` config option.

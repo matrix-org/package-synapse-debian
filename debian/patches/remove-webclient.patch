@@ -9,7 +9,7 @@
                  ))
  
          additional_resources = listener_config.get("additional_resources", {})
-@@ -155,7 +155,7 @@
+@@ -157,7 +157,7 @@
              )
          logger.info("Synapse now listening on port %d", port)
  
@@ -18,7 +18,7 @@
          """Build a resource map for a named resource
  
          Args:
-@@ -213,7 +213,7 @@
+@@ -215,7 +215,7 @@
                  SERVER_KEY_V2_PREFIX: KeyApiV2Resource(self),
              })
  

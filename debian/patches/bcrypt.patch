@@ -15,7 +15,7 @@
              return make_deferred_yieldable(threads.deferToThread(_do_validate_hash))
 --- a/synapse/python_dependencies.py
 +++ b/synapse/python_dependencies.py
-@@ -31,7 +31,7 @@
+@@ -47,7 +47,7 @@
      "pyyaml": ["yaml"],
      "pyasn1": ["pyasn1"],
      "daemonize": ["daemonize"],
