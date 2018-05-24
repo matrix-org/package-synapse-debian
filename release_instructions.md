@@ -48,7 +48,7 @@ If it works (and runs) then we can actually release it:
     gbp dch --release --auto  # Ensure that the changelog doesnt lie
     git commit -m "<RELEASE>" debian/changelog
     git clean -dfx  # This ensures that there are no uncommitted changes
-    gbp buildpackage --git-tag -A -s -d jessie -c <schroot name>
+    gbp buildpackage --git-tag -A -s -d jessie
 
 To push to the repo:
 
