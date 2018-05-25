@@ -46,6 +46,12 @@ tls_fingerprints: []
 
 ## Server ##
 
+# The domain name of the server, with optional explicit port.
+# This is used by remote servers to connect to this server,
+# e.g. matrix.org, localhost:8080, etc.
+# This is also the last part of your UserID. 
+server_name: "YOUR SERVER HERE"
+
 # When running as a daemon, the file to store the pid in
 pid_file: "/var/run/matrix-synapse.pid"
 
@@ -449,6 +455,17 @@ trusted_third_party_id_servers:
 # Enable collection and rendering of performance metrics
 enable_metrics: False
 
+# Please opt in or out of reporting anonymized homeserver usage statistics, by
+# setting the `report_stats` key in your config file to either True or False.
+#
+# We would really appreciate it if you could help our project out by reporting
+# anonymized usage statistics from your homeserver. Only very basic aggregate
+# data (e.g. number of users) will be reported, but it helps us to track the
+# growth of the Matrix community, and helps us to make Matrix a success, as well
+# as to convince other networks that they should peer with us.
+#report_stats: True
+
+
 ## API Configuration ##
 
 # A list of event types that will be included in the room_invite_state
@@ -467,6 +484,10 @@ app_service_config_files: []
 
 # Used to enable access token expiration.
 expire_access_token: False
+
+# a secret which is used to calculate HMACs for form values, to stop
+# falsification of values
+# form_secret: "<PRIVATE STRING>" 
 
 ## Signing Keys ##
 
@@ -619,3 +640,60 @@ enable_group_creation: false
 #
 #user_directory:
 #   search_all_users: false
+
+
+# User Consent configuration
+#
+# Parts of this section are required if enabling the 'consent' resource under
+# 'listeners', in particular 'template_dir' and 'version'.
+#
+# 'template_dir' gives the location of the templates for the HTML forms.
+# This directory should contain one subdirectory per language (eg, 'en', 'fr'),
+# and each language directory should contain the policy document (named as
+# '<version>.html') and a success page (success.html).
+#
+# 'version' specifies the 'current' version of the policy document. It defines
+# the version to be served by the consent resource if there is no 'v'
+# parameter.
+#
+# 'server_notice_content', if enabled, will send a user a "Server Notice"
+# asking them to consent to the privacy policy. The 'server_notices' section
+# must also be configured for this to work.
+#
+# 'block_events_error', if set, will block any attempts to send events
+# until the user consents to the privacy policy. The value of the setting is
+# used as the text of the error.
+#
+# user_consent:
+#   template_dir: res/templates/privacy
+#   version: 1.0
+#   server_notice_content:
+#     msgtype: m.text
+#     body: >-
+#       To continue using this homeserver you must review and agree to the
+#       terms and conditions at %(consent_uri)s
+#   block_events_error: >-
+#     To continue using this homeserver you must review and agree to the
+#     terms and conditions at %(consent_uri)s
+#
+
+
+# Server Notices room configuration
+#
+# Uncomment this section to enable a room which can be used to send notices
+# from the server to users. It is a special room which cannot be left; notices
+# come from a special "notices" user id.
+#
+# If you uncomment this section, you *must* define the system_mxid_localpart
+# setting, which defines the id of the user which will be used to send the
+# notices.
+#
+# It's also possible to override the room name, the display name of the
+# "notices" user, and the avatar for the user.
+#
+# server_notices:
+#   system_mxid_localpart: notices
+#   system_mxid_display_name: "Server Notices"
+#   system_mxid_avatar_url: "mxc://server.com/oumMVlgDnLYFaPVkExemNVVZ"
+#   room_name: "Server Notices"
+
