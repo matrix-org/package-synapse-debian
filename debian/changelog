@@ -1,3 +1,9 @@
+matrix-synapse (0.31.0-1) jessie; urgency=medium
+
+  * New upstream version 0.31.0
+
+ -- Richard van der Hoff <richard@matrix.org>  Wed, 06 Jun 2018 17:23:10 +0100
+
 matrix-synapse (0.30.0-1) jessie; urgency=medium
 
   [ Michael Kaye ]
@@ -479,7 +485,7 @@ matrix-synapse (0.10.0~rc3-1) trusty; urgency=medium
 
 matrix-synapse (0.9.3-1~trusty1) trusty; urgency=medium
 
-  * Rebuild for trusty. 
+  * Rebuild for trusty.
 
  -- Erik Johnston <erikj@matrix.org>  Thu, 20 Aug 2015 15:05:43 +0100
 
