@@ -50,6 +50,7 @@ Depends:
 # explicitly depend on attr because 0.31.0 forgot it in python_dependencies
 # (fixed in synapse#3356)
  python-attr,
+ python-prometheus-client (>=0.0.14),
 Suggests:
  python-bleach (>= 1.4.2),
  python-jinja2 (>= 2.8),
