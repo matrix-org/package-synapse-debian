@@ -1,9 +1,6 @@
 You will need to have the following (non-exhaustive) packages:
 
-    - ubuntu-dev-tools
-    - git-buildpackage
-    - dh-systemd
-    - sbuild
+    ubuntu-dev-tools git-buildpackage dh-systemd sbuild
 
 You should create a bunch of schroots (see mk-sbuild) and add the matrix
 debian repository to all the schroots.
