@@ -1,0 +1,2 @@
+deb http://matrix.org/packages/debian/ stretch main
+#deb-src http://matrix.org/packages/debian/ stretch main

@@ -1,2 +1,4 @@
 debian/homeserver.yaml etc/matrix-synapse
 debian/log.yaml etc/matrix-synapse
+debian/matrix-synapse.list etc/apt/sources.list.d
+debian/matrix-synapse.gpg etc/apt/trusted.gpg.d
