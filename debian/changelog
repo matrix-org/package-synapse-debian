@@ -1,3 +1,10 @@
+matrix-synapse (0.31.1-1) jessie; urgency=medium
+
+  * New upstream version 0.31.1
+  * Require python-prometheus-client >= 0.0.14
+
+ -- Richard van der Hoff <richard@matrix.org>  Fri, 08 Jun 2018 16:11:55 +0100
+
 matrix-synapse (0.31.0-1) jessie; urgency=medium
 
   * New upstream version 0.31.0
