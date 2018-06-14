@@ -63,9 +63,13 @@ schroot and installing it. For example:
 
 If it works (and runs) then we can actually release it:
 
-    gbp dch --release --auto  # Ensure that the changelog doesnt lie
+    # add -U high|low|emergency|etc to the following for urgency
+    # https://www.debian.org/doc/debian-policy/#s-f-urgency
+    gbp dch --release --auto -D jessie --force-distribution
+
     git commit -m "<RELEASE>" debian/changelog
     git clean -dfx  # This ensures that there are no uncommitted changes
+    git checkout -- .
     gbp buildpackage --git-tag -A -s -d jessie
 
 To push to the repo:
