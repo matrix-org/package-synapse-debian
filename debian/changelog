@@ -1,3 +1,9 @@
+matrix-synapse (0.31.2-1) jessie; urgency=high
+
+  * New upstream version 0.31.2
+
+ -- Richard van der Hoff <richard@matrix.org>  Thu, 14 Jun 2018 16:49:07 +0100
+
 matrix-synapse (0.31.1-1) jessie; urgency=medium
 
   * New upstream version 0.31.1
