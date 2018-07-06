@@ -25,6 +25,7 @@ Build-Depends:
  python-service-identity (>= 1.0.0),
  python-setuptools (>= 0.6b3),
  python-signedjson (>= 1.0.0),
+ python-sortedcontainers,
  python-syutil (>= 0.0.7),
  python-twisted (>= 16.0.0),
  python-unpaddedbase64 (>= 1.0.1),
