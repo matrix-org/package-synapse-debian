@@ -1,6 +1,6 @@
 --- a/synapse/handlers/auth.py
 +++ b/synapse/handlers/auth.py
-@@ -863,10 +863,8 @@
+@@ -874,10 +874,8 @@
          """
  
          def _do_validate_hash():
@@ -12,7 +12,7 @@
 +                                 stored_hash.encode('utf8')) == stored_hash
  
          if stored_hash:
-             return make_deferred_yieldable(threads.deferToThread(_do_validate_hash))
+             return make_deferred_yieldable(
 --- a/synapse/python_dependencies.py
 +++ b/synapse/python_dependencies.py
 @@ -47,7 +47,7 @@
@@ -23,4 +23,4 @@
 +    "bcrypt": ["bcrypt"],
      "pillow": ["PIL"],
      "pydenticon": ["pydenticon"],
-     "blist": ["blist"],
+     "sortedcontainers": ["sortedcontainers"],

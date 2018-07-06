@@ -11,7 +11,7 @@ Subject: saml2
 @@ -51,7 +51,7 @@
      "pillow": ["PIL"],
      "pydenticon": ["pydenticon"],
-     "blist": ["blist"],
+     "sortedcontainers": ["sortedcontainers"],
 -    "pysaml2>=3.0.0": ["saml2>=3.0.0"],
 +    "pysaml2>=3.0.0": ["saml2"],
      "pymacaroons-pynacl": ["pymacaroons"],
