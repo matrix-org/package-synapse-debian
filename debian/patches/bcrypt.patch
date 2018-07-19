@@ -1,6 +1,8 @@
---- a/synapse/handlers/auth.py
-+++ b/synapse/handlers/auth.py
-@@ -874,10 +874,8 @@
+Index: package-synapse-debian/synapse/handlers/auth.py
+===================================================================
+--- package-synapse-debian.orig/synapse/handlers/auth.py
++++ package-synapse-debian/synapse/handlers/auth.py
+@@ -876,10 +876,8 @@ class AuthHandler(BaseHandler):
          """
  
          def _do_validate_hash():
@@ -13,9 +15,11 @@
  
          if stored_hash:
              return make_deferred_yieldable(
---- a/synapse/python_dependencies.py
-+++ b/synapse/python_dependencies.py
-@@ -47,7 +47,7 @@
+Index: package-synapse-debian/synapse/python_dependencies.py
+===================================================================
+--- package-synapse-debian.orig/synapse/python_dependencies.py
++++ package-synapse-debian/synapse/python_dependencies.py
+@@ -47,7 +47,7 @@ REQUIREMENTS = {
      "pyyaml": ["yaml"],
      "pyasn1": ["pyasn1"],
      "daemonize": ["daemonize"],

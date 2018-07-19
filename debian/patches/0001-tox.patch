@@ -6,13 +6,13 @@ Subject: tox
  tox.ini | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/tox.ini b/tox.ini
-index f408def..4a40b2a 100644
---- a/tox.ini
-+++ b/tox.ini
+Index: package-synapse-debian/tox.ini
+===================================================================
+--- package-synapse-debian.orig/tox.ini
++++ package-synapse-debian/tox.ini
 @@ -1,5 +1,6 @@
  [tox]
- envlist = packaging, py27, py36, pep8
+ envlist = packaging, py27, py36, pep8, check_isort
 +sitepackages = True
  
  [testenv]
