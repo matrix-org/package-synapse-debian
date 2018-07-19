@@ -51,12 +51,13 @@ If the build succeeds then it will have placed a .deb file in the directory
 above. It is a good idea to check that is installable by copying it to a
 schroot and installing it. For example:
 
+    v=`dpkg-parsechangelog -S Version`
     SESS=`schroot -b -c jessie-amd64`
-    sudo cp ../matrix-synapse_0.31.0-1~1.gbp991c3a_all.deb /var/lib/schroot/mount/$SESS/
+    sudo cp ../matrix-synapse_${v}_all.deb /var/lib/schroot/mount/$SESS/
     schroot -r -c $SESS -u root -d /
     
     apt-get update
-    dpkg -i /matrix-synapse_0.31.0-1~1.gbp991c3a_all.deb
+    dpkg -i /matrix-synapse_*.deb
     apt-get install -f
     /etc/init.d/matrix-synapse start
     
