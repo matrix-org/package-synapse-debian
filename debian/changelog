@@ -1,10 +1,8 @@
-matrix-synapse (0.33.2-1~1.gbpde1507) UNRELEASED; urgency=medium
+matrix-synapse (0.33.2-1) jessie; urgency=medium
 
-  ** SNAPSHOT build @de15072877ce5a1254756455523f537e77699fee **
+  * New upstream version 0.33.2
 
-  * UNRELEASED
-
- -- Richard van der Hoff <richard@matrix.org>  Thu, 09 Aug 2018 11:34:14 +0100
+ -- Richard van der Hoff <richard@matrix.org>  Thu, 09 Aug 2018 15:40:42 +0100
 
 matrix-synapse (0.33.1-1) jessie; urgency=medium
 
