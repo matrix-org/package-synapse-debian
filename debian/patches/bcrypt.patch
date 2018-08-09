@@ -2,16 +2,16 @@ Index: package-synapse-debian/synapse/handlers/auth.py
 ===================================================================
 --- package-synapse-debian.orig/synapse/handlers/auth.py
 +++ package-synapse-debian/synapse/handlers/auth.py
-@@ -876,10 +876,8 @@ class AuthHandler(BaseHandler):
-         """
+@@ -891,10 +891,10 @@ class AuthHandler(BaseHandler):
+             # Normalise the Unicode in the password
+             pw = unicodedata.normalize("NFKC", password)
  
-         def _do_validate_hash():
 -            return bcrypt.checkpw(
--                password.encode('utf8') + self.hs.config.password_pepper,
--                stored_hash.encode('utf8')
++            return bcrypt.hashpw(
+                 pw.encode('utf8') + self.hs.config.password_pepper.encode("utf8"),
+                 stored_hash.encode('utf8')
 -            )
-+            return bcrypt.hashpw(password.encode('utf8') + self.hs.config.password_pepper,
-+                                 stored_hash.encode('utf8')) == stored_hash
++            ) == stored_hash
  
          if stored_hash:
              return make_deferred_yieldable(
