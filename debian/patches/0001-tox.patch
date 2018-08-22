@@ -15,5 +15,5 @@ Index: package-synapse-debian/tox.ini
  envlist = packaging, py27, py36, pep8, check_isort
 +sitepackages = True
  
- [testenv]
+ [base]
  deps =
