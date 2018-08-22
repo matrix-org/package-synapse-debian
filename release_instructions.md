@@ -45,7 +45,7 @@ Now try a build:
 Fixing up patches:
 
 * "patch has fuzz" normally just needs a `quilt refresh`
-* conflicts need `quilt push -m -f`, fix conflicts, *then* `quilt refresh`
+* conflicts need `QUILT_PATCHES=debian/patches quilt push -m -f`, fix conflicts, *then* `quilt refresh`
 
 If the build succeeds then it will have placed a .deb file in the directory
 above. It is a good idea to check that is installable by copying it to a
