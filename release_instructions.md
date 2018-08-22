@@ -9,7 +9,7 @@ debian repository to all the schroots.
 
     mk-sbuild --eatmydata jessie
     # Logout/Login to get a new session
-    sudo schroot -c source:jessie-amd64 -u root # Enter the schroot
+    sudo schroot -c source:jessie-amd64 -u root -d / # Enter the schroot
     apt-get update
     echo deb http://matrix.org/packages/debian/ jessie main > /etc/apt/sources.list.d/matrix.list
     apt-key add - <<EOF # Copy key from https://matrix.org/packages/debian/repo-key.asc
@@ -25,6 +25,11 @@ You will want to set ~/.gbp.conf to:
 to use sbuild rather than pbuilder.
 
     sbuild-update --keygen # Generate a signing key
+
+Note: from time to time it is good to update the golden image with updates from debian. This can be done with `sbuild-update`:
+
+    sudo sbuild-update -ugcar jessie
+
 
 # Making a release
 
