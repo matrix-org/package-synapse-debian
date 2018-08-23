@@ -10,7 +10,6 @@ debian repository to all the schroots.
     mk-sbuild --eatmydata stretch
     # Logout/Login to get a new session
     sudo schroot -c source:stretch-amd64 -u root -d / # Enter the schroot
-    apt-get update
     echo deb http://matrix.org/packages/debian/ stretch main > /etc/apt/sources.list.d/matrix.list
     apt-key add - <<EOF # Copy key from https://matrix.org/packages/debian/repo-key.asc
     EOF
@@ -61,10 +60,23 @@ schroot and installing it. For example:
     sudo cp ../matrix-synapse_${v}_all.deb /var/lib/schroot/mount/$SESS/
     schroot -r -c $SESS -u root -d /
     
+    debconf-set-selections <<EOF
+    matrix-synapse matrix-synapse/report-stats boolean false
+    matrix-synapse matrix-synapse/server-name string localhost
+    EOF
+    
     apt-get update
     dpkg -i /matrix-synapse_*.deb
     apt-get install -f
+    
+    sed -i -e '/port: 8...$/{s/8448/18448/; s/8008/18008/}' /etc/matrix-synapse/homeserver.yaml
     /etc/init.d/matrix-synapse start
+    
+    #...
+    
+    /etc/init.d/matrix-synapse stop
+    
+    
     
     exit
     schroot -e -c $SESS
