@@ -7,11 +7,11 @@ You will need to have the following (non-exhaustive) packages:
 You should create a bunch of schroots (see mk-sbuild) and add the matrix
 debian repository to all the schroots.
 
-    mk-sbuild --eatmydata jessie
+    mk-sbuild --eatmydata stretch
     # Logout/Login to get a new session
-    sudo schroot -c source:jessie-amd64 -u root -d / # Enter the schroot
+    sudo schroot -c source:stretch-amd64 -u root -d / # Enter the schroot
     apt-get update
-    echo deb http://matrix.org/packages/debian/ jessie main > /etc/apt/sources.list.d/matrix.list
+    echo deb http://matrix.org/packages/debian/ stretch main > /etc/apt/sources.list.d/matrix.list
     apt-key add - <<EOF # Copy key from https://matrix.org/packages/debian/repo-key.asc
     EOF
     apt-get update
@@ -28,7 +28,7 @@ to use sbuild rather than pbuilder.
 
 Note: from time to time it is good to update the golden image with updates from debian. This can be done with `sbuild-update`:
 
-    sudo sbuild-update -ugcar jessie
+    sudo sbuild-update -ugcar stretch
 
 
 # Making a release
@@ -45,7 +45,7 @@ to the matrix.org repo as per internal documentation on debian repositories.
 
 Now try a build:
 
-    gbp buildpackage --git-ignore-new -A -s -d jessie
+    gbp buildpackage --git-ignore-new -A -s -d stretch
 
 Fixing up patches:
 
@@ -57,7 +57,7 @@ above. It is a good idea to check that is installable by copying it to a
 schroot and installing it. For example:
 
     v=`dpkg-parsechangelog -S Version`
-    SESS=`schroot -b -c jessie-amd64`
+    SESS=`schroot -b -c stretch-amd64`
     sudo cp ../matrix-synapse_${v}_all.deb /var/lib/schroot/mount/$SESS/
     schroot -r -c $SESS -u root -d /
     
@@ -73,12 +73,12 @@ If it works (and runs) then we can actually release it:
 
     # add -U high|low|emergency|etc to the following for urgency
     # https://www.debian.org/doc/debian-policy/#s-f-urgency
-    gbp dch --release --auto -D jessie --force-distribution
+    gbp dch --release --auto -D stretch --force-distribution
 
     git commit -m "<RELEASE>" debian/changelog
     git clean -dfx  # This ensures that there are no uncommitted changes
     git checkout -- .
-    gbp buildpackage --git-tag -A -s -d jessie
+    gbp buildpackage --git-tag -A -s -d stretch
 
 To push to the repo:
 
