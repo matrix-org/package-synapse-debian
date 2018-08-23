@@ -27,7 +27,7 @@ Build-Depends:
  python-signedjson (>= 1.0.0),
  python-sortedcontainers,
  python-syutil (>= 0.0.7),
- python-twisted (>= 16.0.0),
+ python-twisted (>= 17.1.0),
  python-unpaddedbase64 (>= 1.0.1),
  python-yaml,
  python-phonenumbers (>= 8.2.0),
@@ -45,7 +45,7 @@ Depends:
  adduser,
  debconf,
  lsb-base (>= 3.0-6),
- python-twisted (>= 16.0.0),
+ python-twisted (>= 17.1.0),
  python-bcrypt,
  python-canonicaljson (>=1.1.3),
 # explicitly depend on attr because 0.31.0 forgot it in python_dependencies
