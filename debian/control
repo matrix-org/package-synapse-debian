@@ -52,6 +52,9 @@ Depends:
 Suggests:
  python-bleach (>= 1.4.2),
  python-jinja2 (>= 2.8),
+Recommends:
+ python-psycopg2,
+ python-lxml,
 Description: Open federated Instant Messaging and VoIP server
  Matrix is an ambitious new ecosystem for open federated Instant
  Messaging and VoIP. Synapse is a reference Matrix server

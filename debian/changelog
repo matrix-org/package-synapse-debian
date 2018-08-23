@@ -1,6 +1,7 @@
 matrix-synapse (0.33.3-2) UNRELEASED; urgency=medium
 
   * We now require python-twisted 17.1.0 or later
+  * Add recommendations for python-psycopg2 and python-lxml
 
  -- Richard van der Hoff <richard@matrix.org>  Thu, 23 Aug 2018 18:28:58 +0100
 
