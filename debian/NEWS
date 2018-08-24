@@ -1,0 +1,14 @@
+matrix-synapse (0.33.2-2~jessie1) jessie; urgency=medium
+
+  We will no longer be supplying updated Synapse packages for Debian 8 (Jessie):
+  0.33.2 will be the last Synapse version packages for Jessie.
+
+  The reason for this is that we are no longer able to support the old versions
+  of python-twisted available for Jessie, and backporting a more recent version
+  would be prohibitively time-consuming.
+
+  There is more background at https://github.com/matrix-org/synapse/issues/3741.
+
+  We recommend upgrading to Debian Stretch.
+
+ -- Richard van der Hoff <richard@matrix.org>  Fri, 24 Aug 2018 10:39:04 +0100
