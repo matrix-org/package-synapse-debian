@@ -91,7 +91,7 @@ If it works (and runs) then we can actually release it:
     # the official debian ones.
     gbp dch --auto --release --force-distribution -D stretch
     
-    git commit -m "<RELEASE>" debian/changelog
+    git commit -m "`dpkg-parsechangelog -S Version`" debian/changelog
     git clean -dfx  # This ensures that there are no uncommitted changes
     git checkout -- .
     gbp buildpackage --git-tag -A -s -d stretch
