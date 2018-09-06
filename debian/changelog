@@ -1,3 +1,10 @@
+matrix-synapse (0.33.3.1-1mx1) stretch; urgency=critical
+
+  [ Richard van der Hoff ]
+  * Imported Upstream version 0.33.3.1
+
+ -- Richard van der Hoff <richard@matrix.org>  Thu, 06 Sep 2018 11:20:37 +0100
+
 matrix-synapse (0.33.3-2) stretch; urgency=medium
 
   * We now require python-twisted 17.1.0 or later
