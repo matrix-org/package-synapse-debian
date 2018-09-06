@@ -36,7 +36,11 @@ Note: from time to time it is good to update the golden image with updates from 
     cd package-synapse-debian
     git checkout debian
     gbp import-orig --uscan  # Scans and downloads the new source.
-    gbp dch --snapshot --auto debian
+      # alternatively, build a tarball with:
+      # ver=v0.33.3.1; git archive --format tgz --prefix="synapse-${ver}/" $ver -o synapse-$ver.tar.gz
+      # then gbp import-orig path/to/synapse-$ver.tar.gz
+
+    gbp dch --snapshot --auto
 
 New python dependencies should be added to `Build-Depends` in `debian/control`.
 Packages which are not in jessie but are in jessie-backports should be added
@@ -75,18 +79,18 @@ schroot and installing it. For example:
     #...
     
     /etc/init.d/matrix-synapse stop
-    
-    
-    
     exit
     schroot -e -c $SESS
 
 If it works (and runs) then we can actually release it:
 
     # add -U high|low|emergency|etc to the following for urgency
-    # https://www.debian.org/doc/debian-policy/#s-f-urgency
-    gbp dch --release --auto -D stretch --force-distribution
-
+    # https://www.debian.org/doc/debian-policy/ch-controlfields.html#urgency
+    #
+    # NB! set the version to 0.<X>.<Y>-1mx1 to distinguish our packages from
+    # the official debian ones.
+    gbp dch --release --force-distribution -D stretch
+    
     git commit -m "<RELEASE>" debian/changelog
     git clean -dfx  # This ensures that there are no uncommitted changes
     git checkout -- .
