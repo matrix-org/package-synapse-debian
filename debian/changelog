@@ -1,3 +1,9 @@
+matrix-synapse (0.33.2.1-1mx1) jessie; urgency=critical
+
+  * Imported Upstream version 0.33.2.1
+
+ -- Richard van der Hoff <richard@matrix.org>  Thu, 06 Sep 2018 12:00:40 +0100
+
 matrix-synapse (0.33.2-2~jessie1) jessie; urgency=medium
 
   * Dummy update to warn jessie users that we will no longer be supplying
