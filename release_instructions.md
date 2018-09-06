@@ -89,7 +89,7 @@ If it works (and runs) then we can actually release it:
     #
     # NB! set the version to 0.<X>.<Y>-1mx1 to distinguish our packages from
     # the official debian ones.
-    gbp dch --release --force-distribution -D stretch
+    gbp dch --auto --release --force-distribution -D stretch
     
     git commit -m "<RELEASE>" debian/changelog
     git clean -dfx  # This ensures that there are no uncommitted changes
