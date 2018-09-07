@@ -2,7 +2,7 @@ Index: package-synapse-debian/synapse/handlers/auth.py
 ===================================================================
 --- package-synapse-debian.orig/synapse/handlers/auth.py
 +++ package-synapse-debian/synapse/handlers/auth.py
-@@ -891,10 +891,10 @@ class AuthHandler(BaseHandler):
+@@ -905,10 +905,10 @@ class AuthHandler(BaseHandler):
              # Normalise the Unicode in the password
              pw = unicodedata.normalize("NFKC", password)
  

@@ -2,7 +2,7 @@ Index: package-synapse-debian/synapse/app/homeserver.py
 ===================================================================
 --- package-synapse-debian.orig/synapse/app/homeserver.py
 +++ package-synapse-debian/synapse/app/homeserver.py
-@@ -118,7 +118,7 @@ class SynapseHomeServer(HomeServer):
+@@ -125,7 +125,7 @@ class SynapseHomeServer(HomeServer):
          for res in listener_config["resources"]:
              for name in res["names"]:
                  resources.update(self._configure_named_resource(
@@ -11,7 +11,7 @@ Index: package-synapse-debian/synapse/app/homeserver.py
                  ))
  
          additional_resources = listener_config.get("additional_resources", {})
-@@ -165,7 +165,7 @@ class SynapseHomeServer(HomeServer):
+@@ -172,7 +172,7 @@ class SynapseHomeServer(HomeServer):
              )
          logger.info("Synapse now listening on port %d", port)
  
@@ -20,7 +20,7 @@ Index: package-synapse-debian/synapse/app/homeserver.py
          """Build a resource map for a named resource
  
          Args:
-@@ -232,7 +232,7 @@ class SynapseHomeServer(HomeServer):
+@@ -239,7 +239,7 @@ class SynapseHomeServer(HomeServer):
                  SERVER_KEY_V2_PREFIX: KeyApiV2Resource(self),
              })
  
