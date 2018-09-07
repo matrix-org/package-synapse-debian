@@ -5,3 +5,4 @@
 0006-Don-t-require-strict-nacl-0.3.0-requirement.patch
 remove-webclient.patch
 bcrypt.patch
+no_install_with_pip
