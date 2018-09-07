@@ -39,7 +39,7 @@ REQUIREMENTS = {
     "signedjson>=1.0.0": ["signedjson>=1.0.0"],
     "pynacl>=1.2.1": ["nacl>=1.2.1", "nacl.bindings"],
     "service_identity>=1.0.0": ["service_identity>=1.0.0"],
-    "Twisted>=16.0.0": ["twisted>=16.0.0"],
+    "Twisted>=17.1.0": ["twisted>=17.1.0"],
 
     # We use crypto.get_elliptic_curve which is only supported in >=0.15
     "pyopenssl>=0.15": ["OpenSSL>=0.15"],
@@ -78,6 +78,9 @@ CONDITIONAL_REQUIREMENTS = {
     "affinity": {
         "affinity": ["affinity"],
     },
+    "postgres": {
+        "psycopg2>=2.6": ["psycopg2"]
+    }
 }
 
 
