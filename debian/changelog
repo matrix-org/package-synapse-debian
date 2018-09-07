@@ -1,3 +1,11 @@
+matrix-synapse (0.33.4-1mx1) stretch; urgency=medium
+
+  * Imported Upstream version 0.33.4
+  * Avoid telling people to install packages with pip
+    (fixes https://github.com/matrix-org/synapse/issues/3743)
+
+ -- Richard van der Hoff <richard@matrix.org>  Fri, 07 Sep 2018 14:06:17 +0100
+
 matrix-synapse (0.33.3.1-1mx1) stretch; urgency=critical
 
   [ Richard van der Hoff ]
