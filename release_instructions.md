@@ -66,15 +66,16 @@ schroot and installing it. For example:
     
     debconf-set-selections <<EOF
     matrix-synapse matrix-synapse/report-stats boolean false
-    matrix-synapse matrix-synapse/server-name string localhost
+    matrix-synapse matrix-synapse/server-name string localhost:18448
     EOF
     
     apt-get update
     dpkg -i /matrix-synapse_*.deb
     apt-get install -f
     
-    sed -i -e '/port: 8...$/{s/8448/18448/; s/8008/18008/}' /etc/matrix-synapse/homeserver.yaml
+    sed -i -e '/port: 8...$/{s/8448/18448/; s/8008/18008/}' -e '$aregistration_shared_secret: secret' /etc/matrix-synapse/homeserver.yaml
     /etc/init.d/matrix-synapse start
+    register_new_matrix_user -c /etc/matrix-synapse/homeserver.yaml http://localhost:18008 -u test_user -p 1234  --admin
     
     #...
     
