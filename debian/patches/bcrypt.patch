@@ -2,24 +2,24 @@ Index: package-synapse-debian/synapse/handlers/auth.py
 ===================================================================
 --- package-synapse-debian.orig/synapse/handlers/auth.py
 +++ package-synapse-debian/synapse/handlers/auth.py
-@@ -905,10 +905,10 @@ class AuthHandler(BaseHandler):
+@@ -904,10 +904,10 @@ class AuthHandler(BaseHandler):
              # Normalise the Unicode in the password
              pw = unicodedata.normalize("NFKC", password)
  
 -            return bcrypt.checkpw(
 +            return bcrypt.hashpw(
                  pw.encode('utf8') + self.hs.config.password_pepper.encode("utf8"),
-                 stored_hash.encode('utf8')
+                 stored_hash
 -            )
 +            ) == stored_hash
  
          if stored_hash:
-             return make_deferred_yieldable(
+             if not isinstance(stored_hash, bytes):
 Index: package-synapse-debian/synapse/python_dependencies.py
 ===================================================================
 --- package-synapse-debian.orig/synapse/python_dependencies.py
 +++ package-synapse-debian/synapse/python_dependencies.py
-@@ -47,7 +47,7 @@ REQUIREMENTS = {
+@@ -48,7 +48,7 @@ REQUIREMENTS = {
      "pyyaml": ["yaml"],
      "pyasn1": ["pyasn1"],
      "daemonize": ["daemonize"],

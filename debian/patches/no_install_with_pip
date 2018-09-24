@@ -13,10 +13,10 @@ Index: package-synapse-debian/synapse/app/__init__.py
          "",
      ])
      sys.stderr.writelines(message)
-Index: package-synapse-debian/synapse/config/jwt.py
+Index: package-synapse-debian/synapse/config/jwt_config.py
 ===================================================================
---- package-synapse-debian.orig/synapse/config/jwt.py
-+++ package-synapse-debian/synapse/config/jwt.py
+--- package-synapse-debian.orig/synapse/config/jwt_config.py
++++ package-synapse-debian/synapse/config/jwt_config.py
 @@ -19,7 +19,7 @@ MISSING_JWT = (
      """Missing jwt library. This is required for jwt login.
  
