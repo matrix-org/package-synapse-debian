@@ -1,3 +1,9 @@
+matrix-synapse (0.33.5-1matrix1) stretch; urgency=medium
+
+  * Imported Upstream version 0.33.5
+
+ -- Richard van der Hoff <richard@matrix.org>  Mon, 24 Sep 2018 16:06:23 +0100
+
 matrix-synapse (0.33.4-1mx1) stretch; urgency=medium
 
   * Imported Upstream version 0.33.4
