@@ -104,5 +104,7 @@ To push to the repo:
     debsign
     debrelease matrix
 
-Finally, copy to other distributions as per internal documentation on 
-debian repositories.
+Finally, copy to other distributions:
+
+    # in the repo directory on the packages server:
+    for i in buster sid xenial bionic; do reprepro -V copysrc $i stretch matrix-synapse; done
