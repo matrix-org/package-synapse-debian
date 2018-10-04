@@ -1,3 +1,13 @@
+matrix-synapse (0.33.6-1matrix1) stretch; urgency=medium
+
+  * Imported Upstream version 0.33.6
+  * Remove redundant explicit dep on python-bcrypt
+  * Run the tests during build
+  * Add dependency on python-attr 16.0
+  * Refresh patches for 0.33.6
+
+ -- Richard van der Hoff <richard@matrix.org>  Thu, 04 Oct 2018 14:40:29 +0100
+
 matrix-synapse (0.33.5.1-1matrix1) stretch; urgency=medium
 
   * Imported Upstream version 0.33.5.1
