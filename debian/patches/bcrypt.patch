@@ -19,12 +19,12 @@ Index: package-synapse-debian/synapse/python_dependencies.py
 ===================================================================
 --- package-synapse-debian.orig/synapse/python_dependencies.py
 +++ package-synapse-debian/synapse/python_dependencies.py
-@@ -48,7 +48,7 @@ REQUIREMENTS = {
-     "pyyaml": ["yaml"],
-     "pyasn1": ["pyasn1"],
-     "daemonize": ["daemonize"],
--    "bcrypt": ["bcrypt>=3.1.0"],
+@@ -49,7 +49,7 @@ REQUIREMENTS = {
+     "pyasn1>=0.1.9": ["pyasn1"],
+     "pyasn1-modules>=0.0.7": ["pyasn1_modules"],
+     "daemonize>=2.3.1": ["daemonize"],
+-    "bcrypt>=3.1.0": ["bcrypt>=3.1.0"],
 +    "bcrypt": ["bcrypt"],
-     "pillow": ["PIL"],
-     "pydenticon": ["pydenticon"],
-     "sortedcontainers": ["sortedcontainers"],
+     "pillow>=3.1.2": ["PIL"],
+     "pydenticon>=0.2": ["pydenticon"],
+     "sortedcontainers>=1.4.4": ["sortedcontainers"],
