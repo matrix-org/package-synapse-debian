@@ -20,6 +20,7 @@ Build-Depends:
  python-netaddr,
  python-openssl (>= 0.14),
  python-pil,
+ python-psutil,
  python-pyasn1,
  python-pydenticon,
  python-pymacaroons-pynacl,
