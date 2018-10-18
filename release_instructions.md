@@ -61,7 +61,7 @@ schroot and installing it. For example:
 
     v=`dpkg-parsechangelog -S Version`
     SESS=`schroot -b -c stretch-amd64`
-    sudo cp ../matrix-synapse_${v}_all.deb /var/lib/schroot/mount/$SESS/
+    sudo cp ../matrix-synapse_${v}_all.deb `schroot --location -c session:$SESS`
     schroot -r -c $SESS -u root -d /
     
     debconf-set-selections <<EOF
