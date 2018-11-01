@@ -107,4 +107,6 @@ To push to the repo:
 Finally, copy to other distributions:
 
     # in the repo directory on the packages server:
-    for i in buster sid xenial bionic; do reprepro -V copysrc $i stretch matrix-synapse; done
+    for i in buster sid xenial bionic cosmic; do reprepro -V copysrc $i stretch matrix-synapse; done
+    # ensure the versions are expected for all the distributions:
+    reprepro ls matrix-synapse
