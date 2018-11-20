@@ -32,14 +32,18 @@ Note: from time to time it is good to update the golden image with updates from 
 
 # Making a release
 
+    # clone the packaging dir:
     gbp clone git@github.com:matrix-org/package-synapse-debian
     cd package-synapse-debian
     git checkout debian
+
+```
+# if reusing an existing checkout:
+git clean -dfx; git checkout -- .
+for b in master upstream debian; do git checkout $b; git pull; done
+```
     
-    # if reusing an existing checkout:
-    git clean -dfx; git checkout -- .
-    for b in master upstream debian; do git checkout $b; git pull; done
-    
+    # import the source
     gbp import-orig --uscan  # Scans and downloads the new source.
       # alternatively, build a tarball with:
       # ver=v0.33.3.1; git archive --format tgz --prefix="synapse-${ver}/" $ver -o synapse-$ver.tar.gz
