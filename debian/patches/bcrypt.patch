@@ -2,7 +2,7 @@ Index: package-synapse-debian/synapse/handlers/auth.py
 ===================================================================
 --- package-synapse-debian.orig/synapse/handlers/auth.py
 +++ package-synapse-debian/synapse/handlers/auth.py
-@@ -904,10 +904,10 @@ class AuthHandler(BaseHandler):
+@@ -921,10 +921,10 @@ class AuthHandler(BaseHandler):
              # Normalise the Unicode in the password
              pw = unicodedata.normalize("NFKC", password)
  
@@ -26,5 +26,5 @@ Index: package-synapse-debian/synapse/python_dependencies.py
 -    "bcrypt>=3.1.0": ["bcrypt>=3.1.0"],
 +    "bcrypt": ["bcrypt"],
      "pillow>=3.1.2": ["PIL"],
-     "pydenticon>=0.2": ["pydenticon"],
      "sortedcontainers>=1.4.4": ["sortedcontainers"],
+     "psutil>=2.0.0": ["psutil>=2.0.0"],
