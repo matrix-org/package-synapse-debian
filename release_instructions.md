@@ -98,7 +98,7 @@ If it works (and runs) then we can actually release it:
     # add -U high|low|emergency|etc to the following for urgency
     # https://www.debian.org/doc/debian-policy/ch-controlfields.html#urgency
     #
-    # NB! set the version to 0.<X>.<Y>-1matrix1 to distinguish our packages from
+    # NB! set the version to 0.<X>.<Y>-0matrix1 to distinguish our packages from
     # the official debian ones.
     gbp dch --auto --release --force-distribution -D stretch
     
