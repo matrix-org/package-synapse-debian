@@ -1,3 +1,10 @@
+matrix-synapse (0.34.0-0matrix1) stretch; urgency=medium
+
+  * New upstream version 0.34.0
+  * Remove redundant webclient patches
+
+ -- Richard van der Hoff <richard@matrix.org>  Thu, 20 Dec 2018 15:40:28 +0000
+
 matrix-synapse (0.33.9-1matrix1) stretch; urgency=medium
 
   [ Erik Johnston ]
