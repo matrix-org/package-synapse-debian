@@ -8,4 +8,4 @@ version=3
 
 
 opts=filenamemangle=s/.+\/v?(\d\S*)\.tar\.gz/matrix-synapse-$1\.tar\.gz/,uversionmangle=s/-?rc/~rc/ \
-  https://github.com/matrix-org/synapse/tags .*/v?(\d[^\s\-]*)\.tar\.gz debian uupdate
+  https://github.com/matrix-org/synapse/tags .*/archive/v(\d[^\s\-]*)\.tar\.gz debian uupdate
