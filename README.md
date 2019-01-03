@@ -1,3 +1,2 @@
-This repository is used to package synapse as debian package.
-
-The main branch is `debian`.
+This repository contains the source for the transiational matrix-synapse
+package.
