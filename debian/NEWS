@@ -1,0 +1,12 @@
+matrix-synapse (0.34.0-0matrix2) stable; urgency=medium
+
+  The Synapse development team at matrix.org are no longer supporting the
+  matrix-synapse package. matrix-synapse 0.34.0-0 is now a transitional package
+  which replaces matrix-synapse with our replacement, matrix-synapse-py3.
+
+  See https://github.com/matrix-org/synapse/blob/release-v0.34.0/debian/NEWS
+  for the differences between matrix-synapse and matrix-synapse-py3, but in
+  short, the latter uses Python 3 instead of Python 2.7, and installs Synapse
+  into its own virtualenv.
+
+ -- Richard van der Hoff <richard@matrix.org>  Thu,  3 Jan 2019 00:35:00 +0000

@@ -1,0 +1,17 @@
+Source: matrix-synapse
+Section: oldlibs
+Priority: extra
+Maintainer: Synapse Packaging team <packages@matrix.org>
+Build-Depends:
+ debhelper (>= 9),
+Standards-Version: 3.9.8
+Homepage: https://github.com/matrix-org/synapse
+
+Package: matrix-synapse
+Architecture: all
+Section: oldlibs
+Depends:
+ matrix-synapse-py3,
+ ${misc:Depends},
+Description: transitional package
+ This is a transitional package. It can safely be removed.
