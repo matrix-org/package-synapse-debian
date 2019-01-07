@@ -21,7 +21,7 @@ DESC="matrix-synapse"
 NAME=matrix-synapse
 SCRIPTNAME=/etc/init.d/$NAME
 
-PYTHON="/usr/bin/python"
+PYTHON="/opt/venvs/matrix-synapse/bin/python"
 CONFIGS="--config-path /etc/matrix-synapse/homeserver.yaml --config-path /etc/matrix-synapse/conf.d/"
 USER="matrix-synapse"
 SHAREDIR=/var/lib/$NAME
@@ -42,7 +42,7 @@ SHAREDIR=/var/lib/$NAME
 
 get_config_key()
 {
-	python -m synapse.config read "$1" $CONFIGS || return 2
+	$PYTHON -m synapse.config read "$1" $CONFIGS || return 2
 }
 
 #
