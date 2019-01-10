@@ -1,3 +1,15 @@
+Synapse 0.34.0.1 (2019-01-11)
+=============================
+
+This release fixes CVE-2019-5885 and is recommended for all users of Synapse 0.34.0 and below.
+
+Bugfixes
+--------
+
+- Fix problem reading macaroon_secret_key from config
+  ([\#4373](https://github.com/matrix-org/synapse/issues/4373))
+
+
 Synapse 0.34.0 (2018-12-20)
 ===========================
 
