@@ -1,3 +1,9 @@
+matrix-synapse (0.34.0.1-0matrix1) stretch; urgency=medium
+
+  * New upstream version 0.34.0.1
+
+ -- Richard van der Hoff <richard@matrix.org>  Thu, 10 Jan 2019 15:25:19 +0000
+
 matrix-synapse (0.34.0-0matrix1) stretch; urgency=medium
 
   * New upstream version 0.34.0
