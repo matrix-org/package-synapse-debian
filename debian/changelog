@@ -1,9 +1,9 @@
-matrix-synapse (0.34.0.1-0matrix2) UNRELEASED; urgency=medium
+matrix-synapse (0.34.0.1-0matrix2) stretch; urgency=medium
 
   * Turn matrix-synapse into a transitional package which just depends on
     matrix-synapse-py3.
 
- -- Richard van der Hoff <richard@matrix.org>  Wed, 02 Jan 2019 17:48:40 +0000
+ -- Richard van der Hoff <richard@matrix.org>  Tue, 22 Jan 2019 13:15:38 +0000
 
 matrix-synapse (0.34.0.1-0matrix1) stretch; urgency=medium
 
